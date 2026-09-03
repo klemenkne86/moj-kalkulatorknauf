@@ -1,214 +1,5264 @@
 <!DOCTYPE html>
 <html lang="sl">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Knauf AI Kalkulator</title>
-    <style>
-        body { 
-            font-family: sans-serif; 
-            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); 
-            min-height: 100vh; margin: 0; padding: 15px; 
-            display: flex; align-items: center; justify-content: center; box-sizing: border-box;
-        }
-        .box, .login-box { 
-            background: white; padding: 25px; border-radius: 12px; 
-            width: 100%; box-shadow: 0 10px 25px rgba(0,0,0,0.3); box-sizing: border-box;
-        }
-        .box { max-width: 500px; display: none; }
-        .login-box { max-width: 360px; text-align: center; }
-        h2, h3 { color: #0f172a; text-align: center; margin: 0 0 15px 0; }
-        .vnos { margin-bottom: 12px; text-align: left; }
-        label { display: block; font-weight: bold; margin-bottom: 5px; color: #334155; font-size: 14px; }
-        input, select { 
-            width: 100%; padding: 12px; box-sizing: border-box; border: 1px solid #cbd5e1; 
-            border-radius: 6px; font-size: 16px; background: #fff;
-        }
-        button { 
-            width: 100%; padding: 14px; background: #0284c7; color: white; border: none; 
-            font-weight: bold; cursor: pointer; font-size: 16px; border-radius: 6px; margin-top: 5px;
-        }
-        button.btn-login { background: #e30613; }
-        button.btn-odjava { width: auto; padding: 6px 12px; background: #64748b; font-size: 13px; margin: 0; }
-        .rezultati { margin-top: 20px; display: none; }
-        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
-        th, td { padding: 10px; text-align: left; font-size: 14px; border-bottom: 1px solid #e2e8f0; }
-        th { background: #f8fafc; color: #475569; }
-        .error-msg { color: #e30613; font-size: 14px; margin-top: 10px; display: none; font-weight: bold; }
-    </style>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>GradbeniKalkulator | Izračun materiala</title>
+
+<style>
+
+/* =====================================================
+   OSNOVNE BARVE PORTALA
+===================================================== */
+
+:root{
+
+    --navy:#152033;
+    --navy-dark:#101927;
+    --navy-light:#202d42;
+
+    --red:#ed0011;
+    --red-dark:#c9000e;
+    --red-light:#fff0f1;
+
+    --background:#eef1f5;
+    --card:#ffffff;
+
+    --text:#17212b;
+    --muted:#687582;
+
+    --border:#d9e0e7;
+
+    --green:#168447;
+    --green-light:#edf8f1;
+
+}
+
+
+/* =====================================================
+   RESET
+===================================================== */
+
+*{
+    box-sizing:border-box;
+}
+
+html{
+    scroll-behavior:smooth;
+}
+
+body{
+
+    margin:0;
+
+    font-family:
+        Inter,
+        Arial,
+        Helvetica,
+        sans-serif;
+
+    background:var(--background);
+
+    color:var(--text);
+
+}
+
+
+/* =====================================================
+   LOGIN
+===================================================== */
+
+#loginPage{
+
+    min-height:100vh;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    background:
+        linear-gradient(
+            135deg,
+            var(--navy-dark),
+            var(--navy)
+        );
+
+    padding:20px;
+
+}
+
+
+.loginCard{
+
+    width:100%;
+
+    max-width:430px;
+
+    background:white;
+
+    border-radius:18px;
+
+    padding:42px;
+
+    box-shadow:
+        0 25px 80px
+        rgba(0,0,0,.35);
+
+}
+
+
+.loginLogo{
+
+    display:flex;
+
+    justify-content:center;
+
+    margin-bottom:22px;
+
+}
+
+
+.loginLogoText{
+
+    font-size:27px;
+
+    font-weight:900;
+
+    letter-spacing:-1px;
+
+    color:var(--navy);
+
+}
+
+
+.loginLogoText span{
+
+    color:var(--red);
+
+}
+
+
+.loginCard h1{
+
+    text-align:center;
+
+    margin:0 0 8px;
+
+    font-size:28px;
+
+    color:var(--navy);
+
+}
+
+
+.loginSubtitle{
+
+    text-align:center;
+
+    color:#7a858e;
+
+    font-size:14px;
+
+    margin-bottom:30px;
+
+}
+
+
+.loginForm label{
+
+    margin-top:15px;
+
+}
+
+
+.loginForm input{
+
+    margin-bottom:5px;
+
+}
+
+
+.loginButton{
+
+    width:100%;
+
+    margin-top:20px;
+
+    background:var(--red);
+
+    color:white;
+
+}
+
+
+.loginButton:hover{
+
+    background:var(--red-dark);
+
+}
+
+
+.loginError{
+
+    display:none;
+
+    background:#fff0f0;
+
+    color:#c62828;
+
+    border:1px solid #efc4c4;
+
+    border-radius:9px;
+
+    padding:11px;
+
+    margin-top:10px;
+
+    font-size:13px;
+
+}
+
+
+.loginHint{
+
+    margin-top:25px;
+
+    text-align:center;
+
+    font-size:12px;
+
+    color:#9aa3aa;
+
+}
+
+
+/* =====================================================
+   HEADER
+===================================================== */
+
+header{
+
+    background:var(--navy);
+
+    color:white;
+
+    padding:14px 30px;
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    position:sticky;
+
+    top:0;
+
+    z-index:100;
+
+    box-shadow:
+        0 2px 10px
+        rgba(0,0,0,.12);
+
+}
+
+
+.logo{
+
+    display:flex;
+
+    align-items:center;
+
+    font-size:21px;
+
+    font-weight:900;
+
+    letter-spacing:-.5px;
+
+}
+
+
+.logoWhite{
+
+    color:white;
+
+}
+
+
+.logoRed{
+
+    color:var(--red);
+
+}
+
+
+.logoSubtitle{
+
+    font-size:11px;
+
+    color:#c4ccd5;
+
+    margin-top:3px;
+
+    font-weight:500;
+
+}
+
+
+.headerRight{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:15px;
+
+    color:#c5ced8;
+
+    font-size:13px;
+
+}
+
+
+.logoutButton{
+
+    background:#edf1f5;
+
+    color:var(--navy);
+
+    padding:9px 15px;
+
+    border-radius:8px;
+
+    font-size:12px;
+
+    font-weight:800;
+
+}
+
+
+.logoutButton:hover{
+
+    background:white;
+
+}
+
+
+/* =====================================================
+   CONTAINER
+===================================================== */
+
+.container{
+
+    max-width:1250px;
+
+    margin:35px auto;
+
+    padding:0 20px;
+
+}
+
+
+.hero{
+
+    margin-bottom:25px;
+
+}
+
+
+.hero h1{
+
+    margin:0 0 7px;
+
+    font-size:32px;
+
+    color:var(--navy);
+
+}
+
+
+.hero p{
+
+    margin:0;
+
+    color:var(--muted);
+
+}
+
+
+/* =====================================================
+   LAYOUT
+===================================================== */
+
+.grid{
+
+    display:grid;
+
+    grid-template-columns:390px 1fr;
+
+    gap:24px;
+
+}
+
+
+/* =====================================================
+   CARD
+===================================================== */
+
+.card{
+
+    background:white;
+
+    border-radius:15px;
+
+    box-shadow:
+        0 5px 25px
+        rgba(21,32,51,.07);
+
+    padding:25px;
+
+    margin-bottom:24px;
+
+}
+
+
+.card h2{
+
+    font-size:19px;
+
+    margin:0 0 20px;
+
+    color:var(--navy);
+
+}
+
+
+/* =====================================================
+   SECTION TITLE
+===================================================== */
+
+.sectionTitle{
+
+    font-size:13px;
+
+    font-weight:900;
+
+    text-transform:uppercase;
+
+    color:var(--red);
+
+    margin:25px 0 12px;
+
+    letter-spacing:.5px;
+
+}
+
+
+/* =====================================================
+   FORME
+===================================================== */
+
+label{
+
+    display:block;
+
+    font-size:13px;
+
+    font-weight:700;
+
+    margin-bottom:7px;
+
+}
+
+
+input,
+select,
+textarea{
+
+    width:100%;
+
+    padding:12px 13px;
+
+    border:1px solid var(--border);
+
+    border-radius:9px;
+
+    font-size:14px;
+
+    background:white;
+
+    outline:none;
+
+    font-family:inherit;
+
+    color:var(--text);
+
+}
+
+
+textarea{
+
+    resize:vertical;
+
+    min-height:90px;
+
+}
+
+
+input:focus,
+select:focus,
+textarea:focus{
+
+    border-color:var(--red);
+
+    box-shadow:
+        0 0 0 3px
+        rgba(237,0,17,.08);
+
+}
+
+
+.formGroup{
+
+    margin-bottom:15px;
+
+}
+
+
+.two{
+
+    display:grid;
+
+    grid-template-columns:1fr 1fr;
+
+    gap:12px;
+
+}
+
+
+/* =====================================================
+   BUTTONS
+===================================================== */
+
+button{
+
+    border:0;
+
+    border-radius:9px;
+
+    padding:13px 17px;
+
+    font-weight:800;
+
+    cursor:pointer;
+
+    font-size:14px;
+
+    font-family:inherit;
+
+}
+
+
+.primary{
+
+    width:100%;
+
+    background:var(--red);
+
+    color:white;
+
+}
+
+
+.primary:hover{
+
+    background:var(--red-dark);
+
+}
+
+
+.secondary{
+
+    background:#edf1f5;
+
+    color:var(--navy);
+
+}
+
+
+.secondary:hover{
+
+    background:#e0e5eb;
+
+}
+
+
+/* =====================================================
+   RESULT
+===================================================== */
+
+.resultHeader{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    gap:20px;
+
+    margin-bottom:20px;
+
+}
+
+
+.resultHeader h2{
+
+    margin:0;
+
+}
+
+
+.badge{
+
+    display:inline-block;
+
+    background:var(--red-light);
+
+    color:var(--red);
+
+    padding:7px 11px;
+
+    border-radius:20px;
+
+    font-size:12px;
+
+    font-weight:900;
+
+}
+
+
+.summary{
+
+    display:grid;
+
+    grid-template-columns:
+        repeat(3,1fr);
+
+    gap:12px;
+
+    margin-bottom:22px;
+
+}
+
+
+.summaryBox{
+
+    background:#f5f7f9;
+
+    padding:15px;
+
+    border-radius:11px;
+
+    border-left:3px solid var(--red);
+
+}
+
+
+.summaryBox span{
+
+    display:block;
+
+    font-size:12px;
+
+    color:#75818b;
+
+    margin-bottom:5px;
+
+}
+
+
+.summaryBox strong{
+
+    font-size:18px;
+
+    color:var(--navy);
+
+}
+
+
+table{
+
+    width:100%;
+
+    border-collapse:collapse;
+
+}
+
+
+th{
+
+    background:#f1f3f6;
+
+    text-align:left;
+
+    font-size:12px;
+
+    padding:12px;
+
+    color:#596772;
+
+}
+
+
+td{
+
+    padding:12px;
+
+    border-bottom:
+        1px solid #edf0f2;
+
+    font-size:14px;
+
+}
+
+
+.qty{
+
+    font-weight:900;
+
+    color:var(--navy);
+
+}
+
+
+.reserve{
+
+    margin-top:17px;
+
+    padding:14px;
+
+    background:#fff8e7;
+
+    border:1px solid #f1d99b;
+
+    border-radius:10px;
+
+    font-size:13px;
+
+}
+
+
+.actions{
+
+    display:flex;
+
+    gap:10px;
+
+    margin-top:20px;
+
+}
+
+
+.actions button{
+
+    flex:1;
+
+}
+
+
+/* =====================================================
+   TRGOVINE
+===================================================== */
+
+.storeSearch{
+
+    background:
+        var(--red-light);
+
+    border:
+        1px solid #f5c7cb;
+
+    padding:20px;
+
+    border-radius:13px;
+
+    margin-bottom:18px;
+
+}
+
+
+.storeSearch h3{
+
+    margin:0 0 6px;
+
+    color:var(--navy);
+
+}
+
+
+.storeSearch p{
+
+    margin:0 0 15px;
+
+    font-size:13px;
+
+    color:#64717b;
+
+}
+
+
+.storeList{
+
+    display:grid;
+
+    gap:12px;
+
+}
+
+
+.store{
+
+    border:
+        1px solid #e0e5e8;
+
+    border-radius:12px;
+
+    padding:17px;
+
+    display:grid;
+
+    grid-template-columns:1fr auto;
+
+    gap:15px;
+
+    transition:.2s;
+
+}
+
+
+.store:hover{
+
+    border-color:var(--red);
+
+    box-shadow:
+        0 5px 20px
+        rgba(237,0,17,.08);
+
+}
+
+
+.storeName{
+
+    font-size:16px;
+
+    font-weight:900;
+
+    margin-bottom:5px;
+
+    color:var(--navy);
+
+}
+
+
+.storeAddress{
+
+    font-size:13px;
+
+    color:#687681;
+
+    margin-bottom:8px;
+
+}
+
+
+.distance{
+
+    font-weight:900;
+
+    color:var(--red);
+
+    font-size:13px;
+
+}
+
+
+.materialMatch{
+
+    font-size:12px;
+
+    margin-top:9px;
+
+}
+
+
+.good{
+
+    color:var(--green);
+
+    font-weight:700;
+
+}
+
+
+.storeButtons{
+
+    display:flex;
+
+    flex-direction:column;
+
+    justify-content:center;
+
+    gap:8px;
+
+}
+
+
+.mapBtn{
+
+    background:#edf1f5;
+
+    color:var(--navy);
+
+    white-space:nowrap;
+
+}
+
+
+.mapBtn:hover{
+
+    background:#e1e6eb;
+
+}
+
+
+.quoteBtn{
+
+    background:var(--red);
+
+    color:white;
+
+    white-space:nowrap;
+
+}
+
+
+.quoteBtn:hover{
+
+    background:var(--red-dark);
+
+}
+
+
+/* =====================================================
+   IZVAJALCI
+===================================================== */
+
+.contractorIntro{
+
+    background:var(--green-light);
+
+    border:
+        1px solid #cde7d3;
+
+    padding:20px;
+
+    border-radius:13px;
+
+    margin-bottom:18px;
+
+}
+
+
+.contractorIntro h3{
+
+    margin:0 0 6px;
+
+    color:var(--navy);
+
+}
+
+
+.contractorIntro p{
+
+    margin:0;
+
+    color:#64717b;
+
+    font-size:13px;
+
+}
+
+
+.contractorList{
+
+    display:grid;
+
+    gap:12px;
+
+}
+
+
+.contractor{
+
+    border:
+        1px solid #e0e5e8;
+
+    border-radius:12px;
+
+    padding:18px;
+
+    display:grid;
+
+    grid-template-columns:1fr auto;
+
+    gap:15px;
+
+    transition:.2s;
+
+}
+
+
+.contractor:hover{
+
+    border-color:var(--green);
+
+    box-shadow:
+        0 5px 20px
+        rgba(22,132,71,.08);
+
+}
+
+
+.contractorName{
+
+    font-size:16px;
+
+    font-weight:900;
+
+    margin-bottom:6px;
+
+    color:var(--navy);
+
+}
+
+
+.contractorAddress{
+
+    font-size:13px;
+
+    color:#687681;
+
+    margin-bottom:8px;
+
+}
+
+
+.contractorMeta{
+
+    display:flex;
+
+    flex-wrap:wrap;
+
+    gap:7px;
+
+    margin-top:8px;
+
+}
+
+
+.contractorTag{
+
+    background:#f1f5f7;
+
+    color:#56636d;
+
+    border-radius:20px;
+
+    padding:5px 9px;
+
+    font-size:11px;
+
+    font-weight:700;
+
+}
+
+
+.rating{
+
+    color:#e49a00;
+
+    font-weight:900;
+
+    font-size:13px;
+
+}
+
+
+.verified{
+
+    display:inline-block;
+
+    background:#e8f7ed;
+
+    color:var(--green);
+
+    border-radius:20px;
+
+    padding:5px 9px;
+
+    font-size:11px;
+
+    font-weight:900;
+
+    margin-top:7px;
+
+}
+
+
+.contractorButtons{
+
+    display:flex;
+
+    flex-direction:column;
+
+    justify-content:center;
+
+    gap:8px;
+
+}
+
+
+.contractorQuoteBtn{
+
+    background:var(--red);
+
+    color:white;
+
+    white-space:nowrap;
+
+}
+
+
+.contractorQuoteBtn:hover{
+
+    background:var(--red-dark);
+
+}
+
+
+/* =====================================================
+   IZBIRA POVPRAŠEVANJA
+===================================================== */
+
+.requestType{
+
+    display:grid;
+
+    grid-template-columns:1fr 1fr;
+
+    gap:10px;
+
+    margin-bottom:20px;
+
+}
+
+
+.requestType button{
+
+    border:
+        2px solid #e0e5e8;
+
+    background:#fff;
+
+    color:var(--navy);
+
+    text-align:left;
+
+}
+
+
+.requestType button.active{
+
+    border-color:var(--red);
+
+    background:var(--red-light);
+
+    color:var(--red);
+
+}
+
+
+.requestType button strong{
+
+    display:block;
+
+    margin-bottom:4px;
+
+}
+
+
+.requestType button span{
+
+    font-size:11px;
+
+    font-weight:500;
+
+    color:#697682;
+
+}
+
+
+/* =====================================================
+   MODAL
+===================================================== */
+
+.modalOverlay{
+
+    position:fixed;
+
+    inset:0;
+
+    background:
+        rgba(10,17,28,.65);
+
+    display:none;
+
+    align-items:center;
+
+    justify-content:center;
+
+    padding:20px;
+
+    z-index:1000;
+
+}
+
+
+.modalOverlay.active{
+
+    display:flex;
+
+}
+
+
+.modal{
+
+    width:100%;
+
+    max-width:620px;
+
+    max-height:90vh;
+
+    overflow:auto;
+
+    background:white;
+
+    border-radius:18px;
+
+    padding:28px;
+
+    box-shadow:
+        0 25px 80px
+        rgba(0,0,0,.3);
+
+}
+
+
+.modalHeader{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:flex-start;
+
+    gap:20px;
+
+    margin-bottom:20px;
+
+}
+
+
+.modalHeader h2{
+
+    margin:0 0 5px;
+
+    color:var(--navy);
+
+}
+
+
+.modalHeader p{
+
+    margin:0;
+
+    color:#74808a;
+
+    font-size:13px;
+
+}
+
+
+.closeBtn{
+
+    width:35px;
+
+    height:35px;
+
+    padding:0;
+
+    background:#eef1f5;
+
+    color:var(--navy);
+
+    font-size:18px;
+
+}
+
+
+.closeBtn:hover{
+
+    background:#e1e5ea;
+
+}
+
+
+.quoteStore{
+
+    background:var(--red-light);
+
+    border:
+        1px solid #f5c7cb;
+
+    padding:14px;
+
+    border-radius:10px;
+
+    margin-bottom:20px;
+
+    font-size:13px;
+
+}
+
+
+.quoteMaterial{
+
+    background:#f7f9fa;
+
+    border-radius:10px;
+
+    padding:15px;
+
+    margin-bottom:20px;
+
+    max-height:220px;
+
+    overflow:auto;
+
+}
+
+
+.quoteMaterial h4{
+
+    margin:0 0 10px;
+
+    font-size:13px;
+
+}
+
+
+.quoteMaterialRow{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    gap:10px;
+
+    padding:6px 0;
+
+    border-bottom:
+        1px solid #e6eaed;
+
+    font-size:13px;
+
+}
+
+
+.quoteMaterialRow:last-child{
+
+    border-bottom:0;
+
+}
+
+
+.quoteActions{
+
+    display:flex;
+
+    gap:10px;
+
+    margin-top:20px;
+
+}
+
+
+.quoteActions button{
+
+    flex:1;
+
+}
+
+
+.checkboxRow{
+
+    display:flex;
+
+    gap:10px;
+
+    align-items:flex-start;
+
+    margin-top:15px;
+
+    font-size:12px;
+
+    color:#687681;
+
+}
+
+
+.checkboxRow input{
+
+    width:auto;
+
+    margin-top:3px;
+
+}
+
+
+/* =====================================================
+   INFO / EMPTY
+===================================================== */
+
+.info{
+
+    padding:14px;
+
+    border-radius:10px;
+
+    background:#f5f7f9;
+
+    color:#63707a;
+
+    font-size:12px;
+
+    line-height:1.6;
+
+}
+
+
+.info strong{
+
+    color:var(--red);
+
+}
+
+
+.empty{
+
+    padding:25px;
+
+    text-align:center;
+
+    color:#77838d;
+
+    background:#f7f9fa;
+
+    border-radius:12px;
+
+}
+
+
+/* =====================================================
+   TOAST
+===================================================== */
+
+.toast{
+
+    position:fixed;
+
+    right:25px;
+
+    bottom:25px;
+
+    background:var(--navy);
+
+    color:white;
+
+    padding:14px 18px;
+
+    border-radius:10px;
+
+    box-shadow:
+        0 10px 30px
+        rgba(0,0,0,.2);
+
+    display:none;
+
+    z-index:2000;
+
+    font-size:13px;
+
+    border-left:
+        4px solid var(--red);
+
+}
+
+
+.toast.show{
+
+    display:block;
+
+}
+
+
+/* =====================================================
+   FOOTER
+===================================================== */
+
+footer{
+
+    text-align:center;
+
+    color:#8a959e;
+
+    font-size:12px;
+
+    padding:20px;
+
+}
+
+
+/* =====================================================
+   RESPONSIVE
+===================================================== */
+
+@media(max-width:900px){
+
+    .grid{
+
+        grid-template-columns:1fr;
+
+    }
+
+    .summary{
+
+        grid-template-columns:1fr 1fr;
+
+    }
+
+}
+
+
+@media(max-width:600px){
+
+    header{
+
+        padding:14px 15px;
+
+    }
+
+    .headerRight span{
+
+        display:none;
+
+    }
+
+    .container{
+
+        margin:20px auto;
+
+        padding:0 12px;
+
+    }
+
+    .card{
+
+        padding:18px;
+
+    }
+
+    .summary{
+
+        grid-template-columns:1fr;
+
+    }
+
+    .two{
+
+        grid-template-columns:1fr;
+
+    }
+
+    .store,
+    .contractor{
+
+        grid-template-columns:1fr;
+
+    }
+
+    .storeButtons,
+    .contractorButtons{
+
+        flex-direction:row;
+
+    }
+
+    .actions{
+
+        flex-direction:column;
+
+    }
+
+    .loginCard{
+
+        padding:28px 22px;
+
+    }
+
+    .quoteActions{
+
+        flex-direction:column;
+
+    }
+
+    .requestType{
+
+        grid-template-columns:1fr;
+
+    }
+
+    .logo{
+
+        font-size:17px;
+
+    }
+
+}
+
+
+/* =====================================================
+   PRINT
+===================================================== */
+
+@media print{
+
+    body{
+
+        background:white;
+
+    }
+
+    header{
+
+        position:static;
+
+        background:white;
+
+        color:black;
+
+        border-bottom:
+            1px solid #ddd;
+
+    }
+
+    .logoWhite{
+
+        color:black;
+
+    }
+
+    .logoRed{
+
+        color:var(--red);
+
+    }
+
+    .headerRight{
+
+        display:none;
+
+    }
+
+    .grid{
+
+        display:block;
+
+    }
+
+    .card{
+
+        box-shadow:none;
+
+        border:
+            1px solid #ddd;
+
+        break-inside:avoid;
+
+    }
+
+    .grid > div:first-child{
+
+        display:none;
+
+    }
+
+    .storeSearch,
+    .contractorIntro,
+    .actions,
+    .logoutButton,
+    footer{
+
+        display:none;
+
+    }
+
+    .store,
+    .contractor{
+
+        break-inside:avoid;
+
+    }
+
+}
+
+
+/* =====================================================
+   DODATNI VIZUALNI ELEMENT
+===================================================== */
+
+.redLine{
+
+    height:4px;
+
+    width:55px;
+
+    background:var(--red);
+
+    border-radius:10px;
+
+    margin-top:10px;
+
+}
+
+
+</style>
+
 </head>
+
+
 <body>
 
-<!-- 1. PRIJAVA -->
-<div class="login-box" id="oknoPrijava">
-    <h3>🔐 Zaklenjen sistem</h3>
-    <div class="vnos">
-        <label>Uporabniško ime:</label>
-        <input type="text" id="user">
+
+<!-- ===================================================
+     LOGIN
+=================================================== -->
+
+<div id="loginPage">
+
+    <div class="loginCard">
+
+        <div class="loginLogo">
+
+            <div class="loginLogoText">
+
+                GRADBENI<span>KALCULATOR</span>
+
+            </div>
+
+        </div>
+
+
+        <h1>
+            Knauf kalkulator
+        </h1>
+
+
+        <div class="loginSubtitle">
+
+            Profesionalni izračun materiala
+
+        </div>
+
+
+        <div class="redLine"
+             style="margin:0 auto 20px;">
+        </div>
+
+
+        <div class="loginForm">
+
+            <label>
+                Uporabniško ime
+            </label>
+
+
+            <input
+                id="username"
+                type="text"
+                placeholder="Uporabniško ime"
+                autocomplete="username"
+            >
+
+
+            <label>
+                Geslo
+            </label>
+
+
+            <input
+                id="password"
+                type="password"
+                placeholder="Geslo"
+                autocomplete="current-password"
+            >
+
+
+            <div
+                id="loginError"
+                class="loginError">
+
+                Napačno uporabniško ime ali geslo.
+
+            </div>
+
+
+            <button
+                class="loginButton"
+                onclick="login()">
+
+                PRIJAVA
+
+            </button>
+
+        </div>
+
+
+        <div class="loginHint">
+
+            Dostop do GradbeniKalkulator portala
+
+        </div>
+
     </div>
-    <div class="vnos">
-        <label>Geslo:</label>
-        <input type="password" id="pass">
-    </div>
-    <button class="btn-login" onclick="klikPrijava()">PRIJAVA</button>
-    <div class="error-msg" id="napakica">Napačni podatki!</div>
+
 </div>
 
-<!-- 2. KALKULATOR -->
-<div class="box" id="oknoKalkulator">
-    <div style="text-align: right; margin-bottom: 10px;">
-        <button class="btn-odjava" onclick="klikOdjava()">➡️ Odjava</button>
+
+
+<!-- ===================================================
+     APLIKACIJA
+=================================================== -->
+
+<div
+    id="appPage"
+    style="display:none;"
+>
+
+
+<header>
+
+
+    <div>
+
+        <div class="logo">
+
+            <span class="logoWhite">
+                GRADBENI
+            </span>
+
+            <span class="logoRed">
+                KALCULATOR
+            </span>
+
+        </div>
+
+
+        <div class="logoSubtitle">
+
+            Izračun materiala za gradbena dela
+
+        </div>
+
     </div>
-    <h2>Knauf AI Kalkulator</h2>
-    <div class="vnos">
-        <label>Kaj gradite?</label>
-        <select id="gradnja">
-            <option value="1">🧱 Predelna stena (Sistem 50mm)</option>
-            <option value="2" selected>🧱 Predelna stena (Sistem 75mm)</option>
-            <option value="3">🧱 Predelna stena (Sistem 100mm)</option>
-            <option value="4">🏠 Raven strop (Spust do 12 cm)</option>
-            <option value="5">🏠 Raven strop (Spust nad 12 cm)</option>
-            <option value="6">📐 Mansarda poševnina (Direktna)</option>
-            <option value="7">📐 Mansarda poševnina (Šponarji)</option>
-        </select>
+
+
+    <div class="headerRight">
+
+        <span>
+
+            Prijavljen:
+            <strong>test</strong>
+
+        </span>
+
+
+        <button
+            class="logoutButton"
+            onclick="logout()">
+
+            ODJAVA
+
+        </button>
+
     </div>
-    <div class="vnos">
-        <label>Obloga plošč:</label>
-        <select id="obloga">
-            <option value="1" selected>Enojna obloga (1 plast)</option>
-            <option value="2">Dvojna obloga (2 plasti)</option>
-        </select>
+
+</header>
+
+
+
+<div class="container">
+
+
+    <!-- HERO -->
+
+    <div class="hero">
+
+        <h1>
+            Knauf kalkulator
+        </h1>
+
+        <p>
+            Izračun potrebnega materiala za suhomontažne sisteme.
+        </p>
+
+        <div class="redLine"></div>
+
     </div>
-    <div class="vnos">
-        <label>Dolžina (metri):</label>
-        <input type="number" id="dolz" value="4.5" step="0.1">
+
+
+
+    <div class="grid">
+
+
+        <!-- =================================================
+             LEVA STRAN
+        ================================================== -->
+
+        <div>
+
+
+            <!-- PODATKI PROJEKTA -->
+
+            <div class="card">
+
+                <h2>
+                    📋 Podatki projekta
+                </h2>
+
+
+                <div class="formGroup">
+
+                    <label>
+                        Lokacija objekta
+                    </label>
+
+                    <input
+                        id="location"
+                        type="text"
+                        placeholder="npr. Kranj, Slovenija"
+                    >
+
+                </div>
+
+
+                <div class="formGroup">
+
+                    <label>
+                        Naziv projekta
+                    </label>
+
+                    <input
+                        id="project"
+                        type="text"
+                        placeholder="npr. Predelna stena dnevna soba"
+                    >
+
+                </div>
+
+
+                <div class="sectionTitle">
+                    Konstrukcija
+                </div>
+
+
+                <div class="formGroup">
+
+                    <label>
+                        Vrsta konstrukcije
+                    </label>
+
+                    <select id="system">
+
+                        <option value="W111">
+                            Predelna stena 50 mm – W111
+                        </option>
+
+                        <option value="W112">
+                            Predelna stena 75 mm – W112
+                        </option>
+
+                        <option value="W116">
+                            Predelna stena 100 mm – W116
+                        </option>
+
+                        <option value="W623">
+                            Raven strop – W623
+                        </option>
+
+                        <option value="W611">
+                            Raven strop – W611
+                        </option>
+
+                        <option value="D612">
+                            Mansarda – D612
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <div class="formGroup">
+
+                    <label>
+                        Število slojev plošč
+                    </label>
+
+                    <select id="layers">
+
+                        <option value="1">
+                            1 sloj
+                        </option>
+
+                        <option value="2">
+                            2 sloja
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <div class="formGroup">
+
+                    <label>
+                        Vrsta plošče
+                    </label>
+
+                    <select id="board">
+
+                        <option value="GKB">
+                            GKB – siva
+                        </option>
+
+                        <option value="GKBI">
+                            GKBI – zelena
+                        </option>
+
+                        <option value="GKF">
+                            GKF – rdeča
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <div class="sectionTitle">
+                    Mere
+                </div>
+
+
+                <div class="two">
+
+
+                    <div class="formGroup">
+
+                        <label>
+                            Dolžina (m)
+                        </label>
+
+                        <input
+                            id="length"
+                            type="number"
+                            min="0"
+                            step="0.01"
+                            value="5"
+                        >
+
+                    </div>
+
+
+                    <div class="formGroup">
+
+                        <label>
+                            Višina (m)
+                        </label>
+
+                        <input
+                            id="height"
+                            type="number"
+                            min="0"
+                            step="0.01"
+                            value="2.6"
+                        >
+
+                    </div>
+
+                </div>
+
+
+                <div class="formGroup">
+
+                    <label>
+                        Rezerva za razrez
+                    </label>
+
+                    <select id="waste">
+
+                        <option value="0">
+                            Brez rezerve
+                        </option>
+
+                        <option value="3">
+                            3 %
+                        </option>
+
+                        <option
+                            value="5"
+                            selected>
+
+                            5 %
+
+                        </option>
+
+                        <option value="7">
+                            7 %
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <button
+                    class="primary"
+                    onclick="calculate()">
+
+                    🧮 IZRAČUNAJ MATERIAL
+
+                </button>
+
+            </div>
+
+
+
+            <!-- KAKO DELUJE -->
+
+            <div class="card">
+
+                <h2>
+                    Kako deluje?
+                </h2>
+
+
+                <div class="info">
+
+                    <strong>1.</strong>
+                    Vnesete lokacijo in podatke projekta.<br>
+
+                    <strong>2.</strong>
+                    Izberete Knauf sistem.<br>
+
+                    <strong>3.</strong>
+                    Kalkulator izračuna potreben material.<br>
+
+                    <strong>4.</strong>
+                    Poiščemo bližnje trgovine.<br>
+
+                    <strong>5.</strong>
+                    Poiščemo bližnje izvajalce.<br>
+
+                    <strong>6.</strong>
+                    Izberete trgovino ali izvajalca.<br>
+
+                    <strong>7.</strong>
+                    Pošljete povpraševanje.
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+
+        <!-- =================================================
+             DESNA STRAN
+        ================================================== -->
+
+        <div>
+
+
+            <!-- REZULTAT -->
+
+            <div class="card">
+
+                <div class="resultHeader">
+
+                    <h2>
+                        Izračun materiala
+                    </h2>
+
+                    <span
+                        class="badge"
+                        id="systemBadge">
+
+                        W111
+
+                    </span>
+
+                </div>
+
+
+                <div id="result">
+
+                    <div class="empty">
+
+                        Vnesite podatke in kliknite
+                        <strong>IZRAČUNAJ MATERIAL</strong>.
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- TRGOVINE -->
+
+            <div class="card">
+
+                <div class="resultHeader">
+
+                    <h2>
+                        🏪 Kje lahko kupim material?
+                    </h2>
+
+                    <span class="badge">
+                        3 trgovine
+                    </span>
+
+                </div>
+
+
+                <div class="storeSearch">
+
+                    <h3>
+                        📍 Bližnje trgovine
+                    </h3>
+
+
+                    <p>
+                        Prikazali bomo najbližje primerne
+                        trgovine glede na lokacijo objekta.
+                    </p>
+
+
+                    <button
+                        class="primary"
+                        onclick="findStores()">
+
+                        🔎 NAJDI TRGOVINE
+
+                    </button>
+
+                </div>
+
+
+                <div id="stores">
+
+                    <div class="empty">
+
+                        Najprej izračunajte material
+                        in poiščite trgovine.
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- IZVAJALCI -->
+
+            <div class="card">
+
+                <div class="resultHeader">
+
+                    <h2>
+                        👷 Izvajalci v bližini
+                    </h2>
+
+                    <span class="badge">
+                        5 izvajalcev
+                    </span>
+
+                </div>
+
+
+                <div class="contractorIntro">
+
+                    <h3>
+                        Potrebujete nekoga za izvedbo?
+                    </h3>
+
+
+                    <p>
+
+                        Poiščite izvajalce v bližini objekta,
+                        ki opravljajo suhomontažo, Knauf,
+                        predelne stene, strope in podobna dela.
+
+                    </p>
+
+
+                    <br>
+
+
+                    <button
+                        class="primary"
+                        onclick="findContractors()">
+
+                        👷 NAJDI IZVAJALCE
+
+                    </button>
+
+                </div>
+
+
+                <div id="contractors">
+
+                    <div class="empty">
+
+                        Najprej izračunajte material
+                        in nato poiščite izvajalce.
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
     </div>
-    <div class="vnos">
-        <label>Višina / Širina (metri):</label>
-        <input type="number" id="vis" value="2.5" step="0.1">
-    </div>
-    <div class="vnos">
-        <label>Tip plošče:</label>
-        <select id="tip">
-            <option value="siva">Siva plošča (GKB - Navadna)</option>
-            <option value="zelena">Zelena plošča (GKBI - Vlaga)</option>
-            <option value="rdeca">Rdeča plošča (GKF / DF - Požarna)</option>
-        </select>
-    </div>
-    <button onclick="klikRacunaj()">IZRAČUNAJ MATERIAL</button>
-    
-    <!-- 3. REZULTATI -->
-    <div id="oknoRezultati" class="rezultati">
-        <h3>📋 Potreben material:</h3>
-        <table>
-            <thead><tr><th>Material</th><th>Količina</th></tr></thead>
-            <tbody id="izpisTabela"></tbody>
-        </table>
-    </div>
+
 </div>
+
+
+
+<footer>
+
+    GradbeniKalkulator –
+    informativni izračun materiala.
+
+</footer>
+
+</div>
+
+
+
+<!-- ===================================================
+     MODAL
+=================================================== -->
+
+<div
+    id="quoteModal"
+    class="modalOverlay"
+>
+
+
+    <div class="modal">
+
+
+        <div class="modalHeader">
+
+
+            <div>
+
+                <h2 id="modalTitle">
+                    Povpraševanje
+                </h2>
+
+
+                <p id="modalSubtitle">
+
+                    Pripravite povpraševanje
+                    za izbrano podjetje.
+
+                </p>
+
+            </div>
+
+
+            <button
+                class="closeBtn"
+                onclick="closeQuote()">
+
+                ×
+
+            </button>
+
+        </div>
+
+
+
+        <div
+            id="quoteStore"
+            class="quoteStore">
+        </div>
+
+
+
+        <div class="sectionTitle">
+
+            Kaj potrebujete?
+
+        </div>
+
+
+
+        <div class="requestType">
+
+
+            <button
+                id="requestExecution"
+                class="active"
+                onclick="selectRequestType('execution')">
+
+
+                <strong>
+                    👷 Samo izvedba
+                </strong>
+
+
+                <span>
+                    Material zagotovite sami.
+                </span>
+
+
+            </button>
+
+
+
+            <button
+                id="requestMaterialExecution"
+                onclick="selectRequestType('material-execution')">
+
+
+                <strong>
+                    🔨 Material + izvedba
+                </strong>
+
+
+                <span>
+                    Izvajalec pripravi ponudbo za oboje.
+                </span>
+
+
+            </button>
+
+
+        </div>
+
+
+
+        <div class="sectionTitle">
+
+            Vaši podatki
+
+        </div>
+
+
+
+        <div class="formGroup">
+
+            <label>
+                Ime in priimek
+            </label>
+
+
+            <input
+                id="customerName"
+                type="text"
+                placeholder="Janez Novak"
+            >
+
+        </div>
+
+
+
+        <div class="two">
+
+
+            <div class="formGroup">
+
+                <label>
+                    E-mail
+                </label>
+
+
+                <input
+                    id="customerEmail"
+                    type="email"
+                    placeholder="janez@email.si"
+                >
+
+            </div>
+
+
+
+            <div class="formGroup">
+
+                <label>
+                    Telefon
+                </label>
+
+
+                <input
+                    id="customerPhone"
+                    type="tel"
+                    placeholder="041 123 456"
+                >
+
+            </div>
+
+        </div>
+
+
+
+        <div class="formGroup">
+
+            <label>
+                Opomba
+            </label>
+
+
+            <textarea
+                id="customerNote"
+                placeholder="Material potrebujem čim prej ...">
+            </textarea>
+
+        </div>
+
+
+
+        <div class="sectionTitle">
+            Projekt
+        </div>
+
+
+        <div
+            id="quoteProjectInfo"
+            class="quoteStore">
+        </div>
+
+
+
+        <div class="sectionTitle">
+
+            Zahtevani material
+
+        </div>
+
+
+        <div
+            id="quoteMaterial"
+            class="quoteMaterial">
+        </div>
+
+
+
+        <label class="checkboxRow">
+
+            <input
+                id="consent"
+                type="checkbox"
+            >
+
+
+            <span>
+
+                Strinjam se, da se moji kontaktni podatki
+                in podatki projekta posredujejo izbranemu
+                podjetju za pripravo ponudbe.
+
+            </span>
+
+        </label>
+
+
+
+        <div class="quoteActions">
+
+
+            <button
+                class="secondary"
+                onclick="closeQuote()">
+
+                PREKLIČI
+
+            </button>
+
+
+            <button
+                class="primary"
+                onclick="sendQuote()">
+
+                📧 POŠLJI POVPRAŠEVANJE
+
+            </button>
+
+
+        </div>
+
+
+    </div>
+
+</div>
+
+
+
+<div
+    id="toast"
+    class="toast">
+</div>
+
+
 
 <script>
-function klikPrijava() {
-    var u = document.getElementById('user').value.trim().toLowerCase();
-    var g = document.getElementById('pass').value.trim().toLowerCase();
-    if (u === "test" && g === "test") {
-        document.getElementById('oknoPrijava').style.display = 'none';
-        document.getElementById('oknoKalkulator').style.display = 'block';
-        document.getElementById('user').value = "";
-        document.getElementById('pass').value = "";
-        document.getElementById('napakica').style.display = 'none';
-    } else {
-        document.getElementById('napakica').style.display = 'block';
+
+
+/* =====================================================
+   PRIJAVA
+===================================================== */
+
+function login(){
+
+    const username =
+        document.getElementById(
+            "username"
+        ).value.trim();
+
+
+    const password =
+        document.getElementById(
+            "password"
+        ).value;
+
+
+    const error =
+        document.getElementById(
+            "loginError"
+        );
+
+
+    if(
+        username === "test" &&
+        password === "test"
+    ){
+
+        sessionStorage.setItem(
+            "knaufLoggedIn",
+            "true"
+        );
+
+
+        document.getElementById(
+            "loginPage"
+        ).style.display = "none";
+
+
+        document.getElementById(
+            "appPage"
+        ).style.display = "block";
+
+
+        error.style.display = "none";
+
+    }else{
+
+        error.style.display = "block";
+
     }
+
 }
 
-function klikOdjava() {
-    document.getElementById('oknoKalkulator').style.display = 'none';
-    document.getElementById('oknoRezultati').style.display = 'none';
-    document.getElementById('oknoPrijava').style.display = 'block';
+
+
+/* =====================================================
+   ODJAVA
+===================================================== */
+
+function logout(){
+
+    sessionStorage.removeItem(
+        "knaufLoggedIn"
+    );
+
+
+    document.getElementById(
+        "appPage"
+    ).style.display = "none";
+
+
+    document.getElementById(
+        "loginPage"
+    ).style.display = "flex";
+
+
+    document.getElementById(
+        "username"
+    ).value = "";
+
+
+    document.getElementById(
+        "password"
+    ).value = "";
+
 }
 
-function klikRacunaj() {
-    var d = parseFloat(document.getElementById('dolz').value);
-    var v = parseFloat(document.getElementById('vis').value);
-    var g = document.getElementById('gradnja').value;
-    var o = parseInt(document.getElementById('obloga').value);
-    var t = document.getElementById('tip').value;
-    
-    if (!d || !v || d <= 0 || v <= 0) {
-        alert("Vnesite pravilne mere.");
+
+
+/* =====================================================
+   PREVERJANJE PRIJAVE
+===================================================== */
+
+window.addEventListener(
+    "DOMContentLoaded",
+    function(){
+
+        if(
+            sessionStorage.getItem(
+                "knaufLoggedIn"
+            ) === "true"
+        ){
+
+            document.getElementById(
+                "loginPage"
+            ).style.display = "none";
+
+
+            document.getElementById(
+                "appPage"
+            ).style.display = "block";
+
+        }
+
+    }
+);
+
+
+
+/* =====================================================
+   ENTER LOGIN
+===================================================== */
+
+document.addEventListener(
+    "keydown",
+    function(e){
+
+        if(
+            e.key === "Enter" &&
+            document.getElementById(
+                "loginPage"
+            ).style.display !== "none"
+        ){
+
+            login();
+
+        }
+
+    }
+);
+
+
+
+/* =====================================================
+   TRGOVINE
+===================================================== */
+
+const stores = [
+
+
+    {
+        name:"MERKUR trgovina, d.d. – Kranj",
+
+        address:
+            "Cesta Staneta Žagarja 67, 4000 Kranj",
+
+        city:"Kranj",
+
+        lat:46.2425,
+
+        lng:14.3550,
+
+        email:"",
+
+        url:
+            "https://www.merkur.si/"
+    },
+
+
+    {
+        name:"OBI d.o.o. – PE Kranj",
+
+        address:
+            "Stara cesta 25, 4000 Kranj",
+
+        city:"Kranj",
+
+        lat:46.2408,
+
+        lng:14.3550,
+
+        email:"info@obi.si",
+
+        url:
+            "https://www.obi.si/"
+    },
+
+
+    {
+        name:"MERKUR trgovina, d.d. – Naklo",
+
+        address:
+            "Cesta na Okroglo 8, 4202 Naklo",
+
+        city:"Naklo",
+
+        lat:46.2748,
+
+        lng:14.3162,
+
+        email:"",
+
+        url:
+            "https://www.merkur.si/"
+    },
+
+
+    {
+        name:"DOM TRADE d.o.o. – Žabnica",
+
+        address:
+            "Žabnica 68, 4209 Žabnica",
+
+        city:"Žabnica",
+
+        lat:46.1950,
+
+        lng:14.3260,
+
+        email:
+            "info@domtrade.si",
+
+        url:
+            "https://www.domtrade.si/"
+    },
+
+
+    {
+        name:"MERKUR trgovina, d.d. – Škofja Loka",
+
+        address:
+            "Grenc 54, 4220 Škofja Loka",
+
+        city:"Škofja Loka",
+
+        lat:46.1680,
+
+        lng:14.3040,
+
+        email:"",
+
+        url:
+            "https://www.merkur.si/"
+    },
+
+
+    {
+        name:"KALCER d.o.o. – Trzin",
+
+        address:
+            "Ljubljanska cesta 51, 1236 Trzin",
+
+        city:"Trzin",
+
+        lat:46.1320,
+
+        lng:14.5600,
+
+        email:
+            "info@kalcer.si",
+
+        url:
+            "https://www.kalcer.si/"
+    },
+
+
+    {
+        name:"SAM d.o.o. – Domžale",
+
+        address:
+            "Ljubljanska cesta 71, 1230 Domžale",
+
+        city:"Domžale",
+
+        lat:46.1382,
+
+        lng:14.5938,
+
+        email:
+            "dom@sam.si",
+
+        url:
+            "https://sam.si/"
+    }
+
+];
+
+
+
+/* =====================================================
+   IZVAJALCI – DEMO
+===================================================== */
+
+const contractors = [
+
+
+    {
+        name:
+            "Demo Suhomontaža Kranj",
+
+        address:
+            "Kranj",
+
+        city:
+            "Kranj",
+
+        lat:46.2420,
+
+        lng:14.3555,
+
+        email:"",
+
+        phone:"",
+
+        rating:4.9,
+
+        verified:true,
+
+        services:[
+            "Knauf",
+            "Predelne stene",
+            "Spuščeni stropi"
+        ]
+    },
+
+
+    {
+        name:
+            "Demo Gradnje Gorenjska",
+
+        address:
+            "Šenčur",
+
+        city:
+            "Šenčur",
+
+        lat:46.2450,
+
+        lng:14.4190,
+
+        email:"",
+
+        phone:"",
+
+        rating:4.8,
+
+        verified:true,
+
+        services:[
+            "Suhomontaža",
+            "Knauf",
+            "Adaptacije"
+        ]
+    },
+
+
+    {
+        name:
+            "Demo Mojster Naklo",
+
+        address:
+            "Naklo",
+
+        city:
+            "Naklo",
+
+        lat:46.2745,
+
+        lng:14.3160,
+
+        email:"",
+
+        phone:"",
+
+        rating:4.7,
+
+        verified:false,
+
+        services:[
+            "Knauf",
+            "Mansarde",
+            "Izolacije"
+        ]
+    },
+
+
+    {
+        name:
+            "Demo Suha Gradnja Škofja Loka",
+
+        address:
+            "Škofja Loka",
+
+        city:
+            "Škofja Loka",
+
+        lat:46.1685,
+
+        lng:14.3045,
+
+        email:"",
+
+        phone:"",
+
+        rating:4.8,
+
+        verified:true,
+
+        services:[
+            "Predelne stene",
+            "Stropi",
+            "Knauf"
+        ]
+    },
+
+
+    {
+        name:
+            "Demo Gradnje Domžale",
+
+        address:
+            "Domžale",
+
+        city:
+            "Domžale",
+
+        lat:46.1380,
+
+        lng:14.5940,
+
+        email:"",
+
+        phone:"",
+
+        rating:4.6,
+
+        verified:false,
+
+        services:[
+            "Suhomontaža",
+            "Mansarde",
+            "Adaptacije"
+        ]
+    },
+
+
+    {
+        name:
+            "Demo Izvajalec Trzin",
+
+        address:
+            "Trzin",
+
+        city:
+            "Trzin",
+
+        lat:46.1320,
+
+        lng:14.5605,
+
+        email:"",
+
+        phone:"",
+
+        rating:4.9,
+
+        verified:true,
+
+        services:[
+            "Knauf",
+            "Spuščeni stropi",
+            "Izolacije"
+        ]
+    }
+
+];
+
+
+
+/* =====================================================
+   SISTEMI
+===================================================== */
+
+const systemData = {
+
+
+    W111:{
+
+        name:
+            "Predelna stena 50 mm – W111",
+
+        profile:
+            "CW/UW 50",
+
+        insulation:
+            "Mineralna volna 50 mm"
+
+    },
+
+
+    W112:{
+
+        name:
+            "Predelna stena 75 mm – W112",
+
+        profile:
+            "CW/UW 75",
+
+        insulation:
+            "Mineralna volna 75 mm"
+
+    },
+
+
+    W116:{
+
+        name:
+            "Predelna stena 100 mm – W116",
+
+        profile:
+            "CW/UW 100",
+
+        insulation:
+            "Mineralna volna 100 mm"
+
+    },
+
+
+    W623:{
+
+        name:
+            "Raven strop – W623",
+
+        profile:
+            "CD/UD profili",
+
+        insulation:
+            "Mineralna volna"
+
+    },
+
+
+    W611:{
+
+        name:
+            "Raven strop – W611",
+
+        profile:
+            "CD/UD profili",
+
+        insulation:
+            "Mineralna volna"
+
+    },
+
+
+    D612:{
+
+        name:
+            "Mansarda – D612",
+
+        profile:
+            "CD/UD profili",
+
+        insulation:
+            "Mineralna volna"
+
+    }
+
+};
+
+
+
+let currentResult = null;
+
+let selectedStore = null;
+
+let selectedContractor = null;
+
+let selectedRequestType =
+    "execution";
+
+
+
+/* =====================================================
+   ZAOKROŽEVANJE
+===================================================== */
+
+function round(
+    value,
+    decimals=1
+){
+
+    const factor =
+        Math.pow(
+            10,
+            decimals
+        );
+
+
+    return Math.ceil(
+        value * factor
+    ) / factor;
+
+}
+
+
+
+/* =====================================================
+   IZRAČUN
+===================================================== */
+
+function calculate(){
+
+    const system =
+        document.getElementById(
+            "system"
+        ).value;
+
+
+    const layers =
+        Number(
+            document.getElementById(
+                "layers"
+            ).value
+        );
+
+
+    const length =
+        Number(
+            document.getElementById(
+                "length"
+            ).value
+        );
+
+
+    const height =
+        Number(
+            document.getElementById(
+                "height"
+            ).value
+        );
+
+
+    const waste =
+        Number(
+            document.getElementById(
+                "waste"
+            ).value
+        );
+
+
+    const board =
+        document.getElementById(
+            "board"
+        ).value;
+
+
+    if(
+        length <= 0 ||
+        height <= 0
+    ){
+
+        alert(
+            "Vnesite pravilno dolžino in višino."
+        );
+
         return;
+
     }
 
-    var m2 = d * v;
-    var odp = 1.10;
-    
-    var pIme = "Mavčna plošča SIVA GKB (2x1.25m)";
-    if (t === "zelena") pIme = "Mavčna plošča ZELENA GKBI (2x1.25m)";
-    if (t === "rdeca") pIme = "Mavčna plošča RDEČA GKF/DF (Požarna)";
 
-    var txt = "";
+    const area =
+        length * height;
 
-    if (g === "1" || g === "2" || g === "3") {
-        var pr = "75"; var vol = "75mm";
-        if (g === "1") { pr = "50"; vol = "50mm"; }
-        if (g === "3") { pr = "100"; vol = "100mm"; }
-        
-        var p = Math.ceil((m2 * 2 * o * odp) / 2.5);
-        var uw = Math.ceil((d * 2 * odp) / 4);
-        var cw = Math.ceil(((d / 0.6) + 1) * odp);
-        var vln = Math.ceil(m2 * odp);
-        var vij = Math.ceil(m2 * 2 * o * 18);
 
-        txt += "<tr><td>" + pIme + "</td><td><b>" + p + " kos</b></td></tr>";
-        txt += "<tr><td>UW " + pr + " vodilo (4m)</td><td><b>" + uw + " kos</b></td></tr>";
-        txt += "<tr><td>CW " + pr + " stebriček (3m)</td><td><b>" + cw + " kos</b></td></tr>";
-        txt += "<tr><td>Izolacijska volna " + vol + "</td><td><b>" + vln + " m²</b></td></tr>";
-        txt += "<tr><td>Vijaki TN 25 / TN 35</td><td><b>" + vij + " kos</b></td></tr>";
-    } 
-    else if (g === "4" || g === "5") {
-        var p = Math.ceil((m2 * o * odp) / 2.5);
-        var ud = Math.ceil((((d + v) * 2) * odp) / 3);
-        var cd = Math.ceil(((v / 0.5) * d * odp) / 3);
-        var vij = Math.ceil(m2 * o * 18);
-        
-        txt += "<tr><td>" + pIme + "</td><td><b>" + p + " kos</b></td></tr>";
-        txt += "<tr><td>UD obodni profil (3m)</td><td><b>" + ud + " kos</b></td></tr>";
-        txt += "<tr><td>CD nosilni profil (3m)</td><td><b>" + cd + " kos</b></td></tr>";
-        
-        if (g === "4") {
-            txt += "<tr><td>Direktna obešala</td><td><b>" + Math.ceil(m2 * 2) + " kos</b></td></tr>";
-        } else {
-            txt += "<tr><td>Žica z ušesom</td><td><b>" + Math.ceil(m2 * 2) + " kos</b></td></tr>";
-            txt += "<tr><td>Sidrno obešalo (Pentlja)</td><td><b>" + Math.ceil(m2 * 2) + " kos</b></td></tr>";
-        }
-        txt += "<tr><td>Vijaki TN 25 / TN 35</td><td><b>" + vij + " kos</b></td></tr>";
-    } 
-    else if (g === "6" || g === "7") {
-        var p = Math.ceil((m2 * o * odp) / 2.5);
-        var ud = Math.ceil((((d + v) * 2) * odp) / 3);
-        var cd = Math.ceil(((v / 0.5) * d * odp) / 3);
-        var vij = Math.ceil(m2 * o * 18);
-        var fol = Math.ceil(m2 * 1.15);
-        
-        txt += "<tr><td>" + pIme + "</td><td><b>" + p + " kos</b></td></tr>";
-        txt += "<tr><td>UD obodni profil (3m)</td><td><b>" + ud + " kos</b></td></tr>";
-        txt += "<tr><td>CD nosilni profil (3m)</td><td><b>" + cd + " kos</b></td></tr>";
-        
-        if (g === "6") {
-            txt += "<tr><td>Direktna obešala za les</td><td><b>" + Math.ceil(m2 * 2) + " kos</b></td></tr>";
-        } else {
-            txt += "<tr><td>Sidrni obešalnik (Šponar)</td><td><b>" + Math.ceil(m2 * 2) + " kos</b></td></tr>";
-        }
-        txt += "<tr><td>Parna zapora (Folija)</td><td><b>" + fol + " m²</b></td></tr>";
-        txt += "<tr><td>Vijaki TN 25 / TN 35</td><td><b>" + vij + " kos</b></td></tr>";
-    }
+    const wallArea =
+        area * 2;
 
-    document.getElementById('izpisTabela').innerHTML = txt;
-    document.getElementById('oknoRezultati').style.display = 'block';
+
+    const reserveMultiplier =
+        1 + waste / 100;
+
+
+    const boardArea =
+        wallArea *
+        layers *
+        reserveMultiplier;
+
+
+    const verticalProfiles =
+        Math.ceil(
+            (length / 0.6) + 1
+        );
+
+
+    const cwLength =
+        verticalProfiles *
+        height *
+        reserveMultiplier;
+
+
+    const uwLength =
+        length *
+        2 *
+        reserveMultiplier;
+
+
+    const screwsPerM2 =
+        layers === 1
+            ? 15
+            : 30;
+
+
+    const screws =
+        Math.ceil(
+            wallArea *
+            screwsPerM2 *
+            reserveMultiplier
+        );
+
+
+    const insulation =
+        area *
+        reserveMultiplier;
+
+
+    const filler =
+        wallArea *
+        (
+            layers === 1
+                ? 0.3
+                : 0.5
+        ) *
+        reserveMultiplier;
+
+
+    const boardNames = {
+
+        GKB:
+            "GKB 12,5 mm",
+
+        GKBI:
+            "GKBI 12,5 mm",
+
+        GKF:
+            "GKF 12,5 mm"
+
+    };
+
+
+    currentResult = {
+
+        system,
+
+        board,
+
+        layers,
+
+        length,
+
+        height,
+
+        wallArea,
+
+        project:
+            document.getElementById(
+                "project"
+            ).value.trim(),
+
+        location:
+            document.getElementById(
+                "location"
+            ).value.trim(),
+
+        waste,
+
+        materials:[
+
+            {
+
+                name:
+                    boardNames[board],
+
+                quantity:
+                    round(boardArea),
+
+                unit:
+                    "m²",
+
+                type:
+                    "BOARD"
+
+            },
+
+
+            {
+
+                name:
+                    systemData[
+                        system
+                    ].profile,
+
+                quantity:
+                    round(cwLength),
+
+                unit:
+                    "m",
+
+                type:
+                    "CW"
+
+            },
+
+
+            {
+
+                name:
+                    "UW profil",
+
+                quantity:
+                    round(uwLength),
+
+                unit:
+                    "m",
+
+                type:
+                    "UW"
+
+            },
+
+
+            {
+
+                name:
+                    systemData[
+                        system
+                    ].insulation,
+
+                quantity:
+                    round(insulation),
+
+                unit:
+                    "m²",
+
+                type:
+                    "INSULATION"
+
+            },
+
+
+            {
+
+                name:
+                    layers === 1
+                        ? "Knauf TN25 vijaki"
+                        : "Knauf TN25/TN35 vijaki",
+
+                quantity:
+                    screws,
+
+                unit:
+                    "kos",
+
+                type:
+                    "SCREWS"
+
+            },
+
+
+            {
+
+                name:
+                    "Fugirna masa",
+
+                quantity:
+                    round(filler),
+
+                unit:
+                    "kg",
+
+                type:
+                    "FILLER"
+
+            },
+
+
+            {
+
+                name:
+                    "Tesnilni trak",
+
+                quantity:
+                    round(uwLength),
+
+                unit:
+                    "m",
+
+                type:
+                    "TAPE"
+
+            }
+
+        ]
+
+    };
+
+
+    renderResult();
+
 }
+
+
+
+/* =====================================================
+   REZULTAT
+===================================================== */
+
+function renderResult(){
+
+    const r =
+        currentResult;
+
+
+    document.getElementById(
+        "systemBadge"
+    ).innerText =
+        r.system;
+
+
+    let html = `
+
+        <div class="summary">
+
+            <div class="summaryBox">
+
+                <span>
+                    Površina stene
+                </span>
+
+                <strong>
+                    ${round(r.wallArea)} m²
+                </strong>
+
+            </div>
+
+
+            <div class="summaryBox">
+
+                <span>
+                    Sistem
+                </span>
+
+                <strong>
+                    ${r.system}
+                </strong>
+
+            </div>
+
+
+            <div class="summaryBox">
+
+                <span>
+                    Vrsta plošče
+                </span>
+
+                <strong>
+                    ${r.board}
+                </strong>
+
+            </div>
+
+        </div>
+
+
+        <table>
+
+            <thead>
+
+                <tr>
+
+                    <th>
+                        Material
+                    </th>
+
+                    <th>
+                        Količina
+                    </th>
+
+                    <th>
+                        Enota
+                    </th>
+
+                </tr>
+
+            </thead>
+
+
+            <tbody>
+
+    `;
+
+
+    r.materials.forEach(
+        function(m){
+
+            html += `
+
+                <tr>
+
+                    <td>
+                        ${escapeHtml(
+                            m.name
+                        )}
+                    </td>
+
+                    <td class="qty">
+
+                        ${m.quantity}
+
+                    </td>
+
+                    <td>
+
+                        ${m.unit}
+
+                    </td>
+
+                </tr>
+
+            `;
+
+        }
+    );
+
+
+    html += `
+
+            </tbody>
+
+        </table>
+
+
+        <div class="reserve">
+
+            ℹ️ Količine vključujejo
+            izbrano rezervo za razrez
+            (${r.waste}%).
+
+            <br><br>
+
+            Končni popis je informativen
+            in ga je treba prilagoditi
+            dejanskim pogojem objekta.
+
+        </div>
+
+
+        <div class="actions">
+
+
+            <button
+                class="secondary"
+                onclick="window.print()">
+
+                🖨️ TISK / PDF
+
+            </button>
+
+
+            <button
+                class="primary"
+                onclick="findStores()">
+
+                🏪 TRGOVINE
+
+            </button>
+
+
+            <button
+                class="primary"
+                onclick="findContractors()">
+
+                👷 IZVAJALCI
+
+            </button>
+
+
+        </div>
+
+    `;
+
+
+    document.getElementById(
+        "result"
+    ).innerHTML =
+        html;
+
+}
+
+
+
+/* =====================================================
+   TRGOVINE
+===================================================== */
+
+function findStores(){
+
+    if(!currentResult){
+
+        alert(
+            "Najprej izračunajte material."
+        );
+
+        return;
+
+    }
+
+
+    const location =
+        document.getElementById(
+            "location"
+        ).value.trim();
+
+
+    if(!location){
+
+        alert(
+            "Najprej vnesite lokacijo objekta."
+        );
+
+        document.getElementById(
+            "location"
+        ).focus();
+
+        return;
+
+    }
+
+
+    const point =
+        getKnownLocation(
+            location
+        );
+
+
+    if(!point){
+
+        document.getElementById(
+            "stores"
+        ).innerHTML = `
+
+            <div class="empty">
+
+                📍 Lokacija
+
+                <strong>
+                    ${escapeHtml(location)}
+                </strong>
+
+                trenutno ni v prototipni
+                bazi lokacij.
+
+                <br><br>
+
+                V naslednji verziji bomo dodali
+                pravo geokodiranje naslovov.
+
+            </div>
+
+        `;
+
+        return;
+
+    }
+
+
+    const ranked =
+
+        stores
+
+            .map(
+                function(store){
+
+                    return {
+
+                        ...store,
+
+                        distance:
+                            haversine(
+                                point.lat,
+                                point.lng,
+                                store.lat,
+                                store.lng
+                            )
+
+                    };
+
+                }
+            )
+
+            .sort(
+                function(a,b){
+
+                    return a.distance -
+                        b.distance;
+
+                }
+            )
+
+            .slice(0,3);
+
+
+    renderStores(
+        ranked
+    );
+
+}
+
+
+
+/* =====================================================
+   PRIKAZ TRGOVIN
+===================================================== */
+
+function renderStores(list){
+
+    let html =
+        `<div class="storeList">`;
+
+
+    list.forEach(
+        function(store,index){
+
+            html += `
+
+                <div class="store">
+
+
+                    <div>
+
+                        <div class="storeName">
+
+                            ${index+1}.
+                            ${escapeHtml(
+                                store.name
+                            )}
+
+                        </div>
+
+
+                        <div class="storeAddress">
+
+                            📍
+                            ${escapeHtml(
+                                store.address
+                            )}
+
+                        </div>
+
+
+                        <div class="distance">
+
+                            ${store.distance.toFixed(1)}
+                            km od objekta
+
+                        </div>
+
+
+                        <div class="materialMatch">
+
+                            <span class="good">
+
+                                ✓ Primerna trgovina
+                                za zahtevani material
+
+                            </span>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="storeButtons">
+
+
+                        <button
+                            class="mapBtn"
+                            onclick="openMap(
+                                '${escapeJs(
+                                    store.address
+                                )}'
+                            )">
+
+                            🗺️ NAVIGACIJA
+
+                        </button>
+
+
+                        <button
+                            class="quoteBtn"
+                            onclick="openStoreQuote(
+                                ${index}
+                            )">
+
+                            📧 POVPRAŠEVANJE
+
+                        </button>
+
+
+                    </div>
+
+
+                </div>
+
+            `;
+
+        }
+    );
+
+
+    html +=
+        `</div>`;
+
+
+    document.getElementById(
+        "stores"
+    ).innerHTML =
+        html;
+
+
+    window.currentStores =
+        list;
+
+}
+
+
+
+/* =====================================================
+   IZVAJALCI
+===================================================== */
+
+function findContractors(){
+
+    if(!currentResult){
+
+        alert(
+            "Najprej izračunajte material."
+        );
+
+        return;
+
+    }
+
+
+    const location =
+        document.getElementById(
+            "location"
+        ).value.trim();
+
+
+    if(!location){
+
+        alert(
+            "Najprej vnesite lokacijo objekta."
+        );
+
+        document.getElementById(
+            "location"
+        ).focus();
+
+        return;
+
+    }
+
+
+    const point =
+        getKnownLocation(
+            location
+        );
+
+
+    if(!point){
+
+        document.getElementById(
+            "contractors"
+        ).innerHTML = `
+
+            <div class="empty">
+
+                📍 Lokacija
+
+                <strong>
+                    ${escapeHtml(location)}
+                </strong>
+
+                trenutno ni v prototipni
+                bazi lokacij.
+
+                <br><br>
+
+                V končni verziji bo mogoče vnesti
+                poljuben naslov in poiskati
+                izvajalce po dejanski razdalji.
+
+            </div>
+
+        `;
+
+        return;
+
+    }
+
+
+    const ranked =
+
+        contractors
+
+            .map(
+                function(contractor){
+
+                    return {
+
+                        ...contractor,
+
+                        distance:
+                            haversine(
+                                point.lat,
+                                point.lng,
+                                contractor.lat,
+                                contractor.lng
+                            )
+
+                    };
+
+                }
+            )
+
+            .sort(
+                function(a,b){
+
+                    if(
+                        b.verified !==
+                        a.verified
+                    ){
+
+                        return b.verified -
+                            a.verified;
+
+                    }
+
+                    return a.distance -
+                        b.distance;
+
+                }
+            )
+
+            .slice(0,5);
+
+
+    renderContractors(
+        ranked
+    );
+
+}
+
+
+
+/* =====================================================
+   PRIKAZ IZVAJALCEV
+===================================================== */
+
+function renderContractors(list){
+
+    let html =
+        `<div class="contractorList">`;
+
+
+    list.forEach(
+        function(contractor,index){
+
+            const tags =
+
+                contractor.services
+
+                    .map(
+                        function(service){
+
+                            return `
+
+                                <span
+                                    class="contractorTag">
+
+                                    ${escapeHtml(
+                                        service
+                                    )}
+
+                                </span>
+
+                            `;
+
+                        }
+                    )
+
+                    .join("");
+
+
+            const verified =
+
+                contractor.verified
+
+                    ? `
+
+                        <div class="verified">
+
+                            ✓ PREVERJEN IZVAJALEC
+
+                        </div>
+
+                    `
+
+                    : "";
+
+
+            html += `
+
+                <div class="contractor">
+
+
+                    <div>
+
+
+                        <div class="contractorName">
+
+                            ${index+1}.
+                            ${escapeHtml(
+                                contractor.name
+                            )}
+
+                        </div>
+
+
+                        <div class="contractorAddress">
+
+                            📍
+                            ${escapeHtml(
+                                contractor.address
+                            )}
+
+                        </div>
+
+
+                        <div class="distance">
+
+                            ${contractor.distance.toFixed(1)}
+                            km od objekta
+
+                        </div>
+
+
+                        <div class="rating">
+
+                            ★
+                            ${contractor.rating.toFixed(1)}
+                            / 5
+
+                        </div>
+
+
+                        ${verified}
+
+
+                        <div class="contractorMeta">
+
+                            ${tags}
+
+                        </div>
+
+
+                    </div>
+
+
+                    <div class="contractorButtons">
+
+
+                        <button
+                            class="mapBtn"
+                            onclick="openMap(
+                                '${escapeJs(
+                                    contractor.address
+                                )}'
+                            )">
+
+                            🗺️ NAVIGACIJA
+
+                        </button>
+
+
+                        <button
+                            class="contractorQuoteBtn"
+                            onclick="openContractorQuote(
+                                ${index}
+                            )">
+
+                            👷 POVPRAŠEVANJE
+
+                        </button>
+
+
+                    </div>
+
+
+                </div>
+
+            `;
+
+        }
+    );
+
+
+    html +=
+        `</div>`;
+
+
+    document.getElementById(
+        "contractors"
+    ).innerHTML =
+        html;
+
+
+    window.currentContractors =
+        list;
+
+}
+
+
+
+/* =====================================================
+   TRGOVINA – MODAL
+===================================================== */
+
+function openStoreQuote(index){
+
+    if(
+        !window.currentStores ||
+        !window.currentStores[index]
+    ){
+
+        return;
+
+    }
+
+
+    selectedStore =
+        window.currentStores[index];
+
+
+    selectedContractor =
+        null;
+
+
+    selectedRequestType =
+        "execution";
+
+
+    prepareQuoteModal(
+        selectedStore,
+        "store"
+    );
+
+}
+
+
+
+/* =====================================================
+   IZVAJALEC – MODAL
+===================================================== */
+
+function openContractorQuote(index){
+
+    if(
+        !window.currentContractors ||
+        !window.currentContractors[index]
+    ){
+
+        return;
+
+    }
+
+
+    selectedContractor =
+        window.currentContractors[index];
+
+
+    selectedStore =
+        null;
+
+
+    selectedRequestType =
+        "execution";
+
+
+    prepareQuoteModal(
+        selectedContractor,
+        "contractor"
+    );
+
+}
+
+
+
+/* =====================================================
+   PRIPRAVA MODALA
+===================================================== */
+
+function prepareQuoteModal(
+    entity,
+    type
+){
+
+    if(!currentResult){
+
+        return;
+
+    }
+
+
+    const isContractor =
+        type === "contractor";
+
+
+    document.getElementById(
+        "modalTitle"
+    ).innerText =
+
+        isContractor
+
+            ? "Povpraševanje za izvedbo"
+
+            : "Povpraševanje za material";
+
+
+    document.getElementById(
+        "modalSubtitle"
+    ).innerText =
+
+        isContractor
+
+            ? "Izvajalcu bomo poslali podatke projekta in popis materiala."
+
+            : "Trgovini bomo poslali seznam zahtevanega materiala.";
+
+
+    document.getElementById(
+        "quoteStore"
+    ).innerHTML = `
+
+        <strong>
+
+            ${escapeHtml(
+                entity.name
+            )}
+
+        </strong>
+
+        <br>
+
+        📍
+        ${escapeHtml(
+            entity.address
+        )}
+
+        <br>
+
+        🚗
+
+        ${
+            entity.distance
+                ? entity.distance.toFixed(1)
+                : "-"
+        }
+
+        km od objekta
+
+    `;
+
+
+    document.getElementById(
+        "quoteProjectInfo"
+    ).innerHTML = `
+
+        <strong>
+
+            ${escapeHtml(
+                currentResult.project ||
+                "Projekt brez naziva"
+            )}
+
+        </strong>
+
+        <br><br>
+
+        📍 Lokacija:
+
+        ${escapeHtml(
+            currentResult.location
+        )}
+
+        <br>
+
+        🔨 Sistem:
+
+        ${escapeHtml(
+            systemData[
+                currentResult.system
+            ].name
+        )}
+
+        <br>
+
+        📐 Mere:
+
+        ${currentResult.length}
+        ×
+        ${currentResult.height}
+        m
+
+        <br>
+
+        📏 Površina:
+
+        ${round(
+            currentResult.wallArea
+        )}
+        m²
+
+        <br>
+
+        🧱 Plošča:
+
+        ${escapeHtml(
+            currentResult.board
+        )}
+
+        <br>
+
+        🔢 Sloji:
+
+        ${currentResult.layers}
+
+    `;
+
+
+    let materialHtml = "";
+
+
+    currentResult.materials.forEach(
+        function(material){
+
+            materialHtml += `
+
+                <div class="quoteMaterialRow">
+
+                    <span>
+
+                        ${escapeHtml(
+                            material.name
+                        )}
+
+                    </span>
+
+
+                    <strong>
+
+                        ${material.quantity}
+                        ${material.unit}
+
+                    </strong>
+
+                </div>
+
+            `;
+
+        }
+    );
+
+
+    document.getElementById(
+        "quoteMaterial"
+    ).innerHTML =
+        materialHtml;
+
+
+    document.getElementById(
+        "requestExecution"
+    ).classList.add(
+        "active"
+    );
+
+
+    document.getElementById(
+        "requestMaterialExecution"
+    ).classList.remove(
+        "active"
+    );
+
+
+    document.getElementById(
+        "consent"
+    ).checked =
+        false;
+
+
+    document.getElementById(
+        "quoteModal"
+    ).classList.add(
+        "active"
+    );
+
+}
+
+
+
+/* =====================================================
+   VRSTA POVPRAŠEVANJA
+===================================================== */
+
+function selectRequestType(type){
+
+    selectedRequestType =
+        type;
+
+
+    document.getElementById(
+        "requestExecution"
+    ).classList.remove(
+        "active"
+    );
+
+
+    document.getElementById(
+        "requestMaterialExecution"
+    ).classList.remove(
+        "active"
+    );
+
+
+    if(
+        type === "execution"
+    ){
+
+        document.getElementById(
+            "requestExecution"
+        ).classList.add(
+            "active"
+        );
+
+    }else{
+
+        document.getElementById(
+            "requestMaterialExecution"
+        ).classList.add(
+            "active"
+        );
+
+    }
+
+}
+
+
+
+/* =====================================================
+   ZAPRI MODAL
+===================================================== */
+
+function closeQuote(){
+
+    document.getElementById(
+        "quoteModal"
+    ).classList.remove(
+        "active"
+    );
+
+}
+
+
+
+/* =====================================================
+   POŠLJI POVPRAŠEVANJE
+===================================================== */
+
+function sendQuote(){
+
+    const entity =
+        selectedStore ||
+        selectedContractor;
+
+
+    if(!entity){
+
+        alert(
+            "Izberite trgovino ali izvajalca."
+        );
+
+        return;
+
+    }
+
+
+    const name =
+        document.getElementById(
+            "customerName"
+        ).value.trim();
+
+
+    const email =
+        document.getElementById(
+            "customerEmail"
+        ).value.trim();
+
+
+    const phone =
+        document.getElementById(
+            "customerPhone"
+        ).value.trim();
+
+
+    const note =
+        document.getElementById(
+            "customerNote"
+        ).value.trim();
+
+
+    const consent =
+        document.getElementById(
+            "consent"
+        ).checked;
+
+
+    if(!name){
+
+        alert(
+            "Vnesite ime in priimek."
+        );
+
+        return;
+
+    }
+
+
+    if(!email){
+
+        alert(
+            "Vnesite e-mail."
+        );
+
+        return;
+
+    }
+
+
+    if(!isValidEmail(email)){
+
+        alert(
+            "Vnesite veljaven e-mail."
+        );
+
+        return;
+
+    }
+
+
+    if(!consent){
+
+        alert(
+            "Potrdite soglasje za posredovanje podatkov."
+        );
+
+        return;
+
+    }
+
+
+    const isContractor =
+        !!selectedContractor;
+
+
+    let requestDescription;
+
+
+    if(!isContractor){
+
+        requestDescription =
+            "Ponudba za dobavo materiala";
+
+    }else{
+
+        requestDescription =
+
+            selectedRequestType ===
+            "material-execution"
+
+                ? "Ponudba za material + izvedbo"
+
+                : "Ponudba za izvedbo";
+
+    }
+
+
+    let materialText = "";
+
+
+    currentResult.materials.forEach(
+        function(material){
+
+            materialText +=
+
+                "- " +
+                material.name +
+                ": " +
+                material.quantity +
+                " " +
+                material.unit +
+                "\n";
+
+        }
+    );
+
+
+    const subject =
+
+        isContractor
+
+            ? "Povpraševanje za izvedbo Knauf projekta"
+
+            : "Povpraševanje za Knauf material";
+
+
+    const body =
+
+`Pozdravljeni,
+
+prosim za pripravo ponudbe.
+
+VRSTA POVPRAŠEVANJA
+-------------------------
+${requestDescription}
+
+PODATKI PROJEKTA
+-------------------------
+Projekt: ${currentResult.project || "Ni navedeno"}
+Lokacija objekta: ${currentResult.location}
+Sistem: ${systemData[currentResult.system].name}
+Mere: ${currentResult.length} x ${currentResult.height} m
+Površina: ${round(currentResult.wallArea)} m²
+Število slojev: ${currentResult.layers}
+Vrsta plošče: ${currentResult.board}
+Rezerva: ${currentResult.waste} %
+
+ZAHTEVANI MATERIAL
+-------------------------
+${materialText}
+
+PODATKI STRANKE
+-------------------------
+Ime in priimek: ${name}
+E-mail: ${email}
+Telefon: ${phone || "Ni naveden"}
+
+OPOMBA
+-------------------------
+${note || "Ni dodatne opombe."}
+
+PROSIMO ZA PONUDBO
+-------------------------
+${
+    isContractor
+
+        ? selectedRequestType ===
+          "material-execution"
+
+            ? "Prosimo za ponudbo za material in izvedbo projekta."
+
+            : "Prosimo za ponudbo za izvedbo projekta."
+
+        : "Prosimo za točno ponudbeno ceno materiala."
+}
+
+Hvala in lep pozdrav,
+
+${name}
+`;
+
+
+    if(!entity.email){
+
+        showToast(
+            "Za to podjetje e-mail še ni nastavljen. V končni verziji bo dodano neposredno pošiljanje."
+        );
+
+        return;
+
+    }
+
+
+    const mailto =
+
+        "mailto:" +
+        entity.email +
+        "?subject=" +
+        encodeURIComponent(
+            subject
+        ) +
+        "&body=" +
+        encodeURIComponent(
+            body
+        );
+
+
+    window.location.href =
+        mailto;
+
+
+    closeQuote();
+
+
+    showToast(
+        "Povpraševanje je pripravljeno za pošiljanje."
+    );
+
+}
+
+
+
+/* =====================================================
+   E-MAIL
+===================================================== */
+
+function isValidEmail(email){
+
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+        .test(email);
+
+}
+
+
+
+/* =====================================================
+   NAVIGACIJA
+===================================================== */
+
+function openMap(address){
+
+    const url =
+
+        "https://www.google.com/maps/search/?api=1&query=" +
+
+        encodeURIComponent(
+            address
+        );
+
+
+    window.open(
+        url,
+        "_blank"
+    );
+
+}
+
+
+
+/* =====================================================
+   HAVERSINE
+===================================================== */
+
+function haversine(
+    lat1,
+    lon1,
+    lat2,
+    lon2
+){
+
+    const R =
+        6371;
+
+
+    const dLat =
+
+        (lat2 - lat1) *
+        Math.PI /
+        180;
+
+
+    const dLon =
+
+        (lon2 - lon1) *
+        Math.PI /
+        180;
+
+
+    const a =
+
+        Math.sin(
+            dLat / 2
+        ) *
+        Math.sin(
+            dLat / 2
+        )
+
+        +
+
+        Math.cos(
+            lat1 *
+            Math.PI /
+            180
+        )
+
+        *
+
+        Math.cos(
+            lat2 *
+            Math.PI /
+            180
+        )
+
+        *
+
+        Math.sin(
+            dLon / 2
+        ) *
+        Math.sin(
+            dLon / 2
+        );
+
+
+    const c =
+
+        2 *
+        Math.atan2(
+            Math.sqrt(a),
+            Math.sqrt(1-a)
+        );
+
+
+    return R * c;
+
+}
+
+
+
+/* =====================================================
+   LOKACIJE
+===================================================== */
+
+function getKnownLocation(text){
+
+    const t =
+        text.toLowerCase();
+
+
+    if(
+        t.includes("kranj") ||
+        t.includes("cerklje")
+    ){
+
+        return {
+
+            lat:46.242,
+
+            lng:14.355
+
+        };
+
+    }
+
+
+    if(
+        t.includes("naklo")
+    ){
+
+        return {
+
+            lat:46.2748,
+
+            lng:14.3162
+
+        };
+
+    }
+
+
+    if(
+        t.includes("škofja loka") ||
+        t.includes("skofja loka")
+    ){
+
+        return {
+
+            lat:46.168,
+
+            lng:14.304
+
+        };
+
+    }
+
+
+    if(
+        t.includes("domžale") ||
+        t.includes("domzale")
+    ){
+
+        return {
+
+            lat:46.1382,
+
+            lng:14.5938
+
+        };
+
+    }
+
+
+    if(
+        t.includes("trzin")
+    ){
+
+        return {
+
+            lat:46.132,
+
+            lng:14.560
+
+        };
+
+    }
+
+
+    if(
+        t.includes("šenčur") ||
+        t.includes("sencur")
+    ){
+
+        return {
+
+            lat:46.245,
+
+            lng:14.419
+
+        };
+
+    }
+
+
+    if(
+        t.includes("žabnica") ||
+        t.includes("zabnica")
+    ){
+
+        return {
+
+            lat:46.195,
+
+            lng:14.326
+
+        };
+
+    }
+
+
+    return null;
+
+}
+
+
+
+/* =====================================================
+   ZAŠČITA HTML
+===================================================== */
+
+function escapeHtml(text){
+
+    return String(text)
+
+        .replace(
+            /&/g,
+            "&amp;"
+        )
+
+        .replace(
+            /</g,
+            "&lt;"
+        )
+
+        .replace(
+            />/g,
+            "&gt;"
+        )
+
+        .replace(
+            /"/g,
+            "&quot;"
+        )
+
+        .replace(
+            /'/g,
+            "&#039;"
+        );
+
+}
+
+
+
+/* =====================================================
+   ZAŠČITA JS
+===================================================== */
+
+function escapeJs(text){
+
+    return String(text)
+
+        .replace(
+            /\\/g,
+            "\\\\"
+        )
+
+        .replace(
+            /'/g,
+            "\\'"
+        )
+
+        .replace(
+            /"/g,
+            '\\"'
+        );
+
+}
+
+
+
+/* =====================================================
+   TOAST
+===================================================== */
+
+function showToast(message){
+
+    const toast =
+        document.getElementById(
+            "toast"
+        );
+
+
+    toast.innerText =
+        message;
+
+
+    toast.classList.add(
+        "show"
+    );
+
+
+    setTimeout(
+        function(){
+
+            toast.classList.remove(
+                "show"
+            );
+
+        },
+        4500
+    );
+
+}
+
+
+
+/* =====================================================
+   KLIK IZVEN MODALA
+===================================================== */
+
+document.getElementById(
+    "quoteModal"
+).addEventListener(
+    "click",
+    function(e){
+
+        if(
+            e.target === this
+        ){
+
+            closeQuote();
+
+        }
+
+    }
+);
+
+
 </script>
 
 </body>
 </html>
-
