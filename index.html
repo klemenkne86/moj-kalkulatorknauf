@@ -2,201 +2,213 @@
 <html lang="sl">
 <head>
     <meta charset="UTF-8">
-    <title>Knauf AI Trgovski Pomočnik</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Knauf AI Kalkulator</title>
     <style>
         body { 
-            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; 
+            font-family: sans-serif; 
             background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); 
-            min-height: 100vh; margin: 0; padding: 40px 20px; 
+            min-height: 100vh; margin: 0; padding: 15px; 
             display: flex; align-items: center; justify-content: center; box-sizing: border-box;
         }
         .box, .login-box { 
-            background: rgba(255, 255, 255, 0.95); padding: 35px; border-radius: 16px; 
-            width: 100%; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3); 
-            backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.2); box-sizing: border-box;
+            background: white; padding: 25px; border-radius: 12px; 
+            width: 100%; box-shadow: 0 10px 25px rgba(0,0,0,0.3); box-sizing: border-box;
         }
-        .box { max-width: 550px; display: none; }
-        .login-box { max-width: 400px; text-align: center; }
-        h2, h3 { color: #0f172a; text-align: center; margin-top: 0; font-weight: 700; }
-        h2 { border-bottom: 2px solid #e2e8f0; padding-bottom: 15px; margin-bottom: 25px; }
-        .vnos { margin-bottom: 20px; }
-        label { display: block; font-weight: 600; margin-bottom: 8px; color: #334155; font-size: 14px; }
+        .box { max-width: 500px; display: none; }
+        .login-box { max-width: 360px; text-align: center; }
+        h2, h3 { color: #0f172a; text-align: center; margin: 0 0 15px 0; }
+        .vnos { margin-bottom: 12px; text-align: left; }
+        label { display: block; font-weight: bold; margin-bottom: 5px; color: #334155; font-size: 14px; }
         input, select { 
-            width: 100%; padding: 12px 14px; box-sizing: border-box; border: 1px solid #cbd5e1; 
-            border-radius: 8px; font-size: 15px; color: #1e293b; background-color: #fff;
+            width: 100%; padding: 12px; box-sizing: border-box; border: 1px solid #cbd5e1; 
+            border-radius: 6px; font-size: 16px; background: #fff;
         }
         button { 
             width: 100%; padding: 14px; background: #0284c7; color: white; border: none; 
-            font-weight: 600; cursor: pointer; font-size: 16px; border-radius: 8px; margin-top: 10px;
+            font-weight: bold; cursor: pointer; font-size: 16px; border-radius: 6px; margin-top: 5px;
         }
-        button:hover { background: #0369a1; }
         button.btn-login { background: #e30613; }
-        button.btn-login:hover { background: #b3050f; }
-        button.btn-odjava { width: auto; padding: 8px 16px; background: #64748b; font-size: 13px; margin: 0; }
-        button.btn-odjava:hover { background: #475569; }
-        .rezultati { margin-top: 30px; display: none; }
-        table { width: 100%; border-collapse: collapse; margin-top: 15px; background: #fff; border-radius: 8px; overflow: hidden; border: 1px solid #e2e8f0; }
-        th, td { padding: 14px; text-align: left; font-size: 15px; border-bottom: 1px solid #f1f5f9; }
-        th { background: #f8fafc; color: #475569; font-weight: 600; }
-        .error-msg { color: #e30613; font-size: 14px; margin-top: 15px; display: none; font-weight: 600; }
+        button.btn-odjava { width: auto; padding: 6px 12px; background: #64748b; font-size: 13px; margin: 0; }
+        .rezultati { margin-top: 20px; display: none; }
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+        th, td { padding: 10px; text-align: left; font-size: 14px; border-bottom: 1px solid #e2e8f0; }
+        th { background: #f8fafc; color: #475569; }
+        .error-msg { color: #e30613; font-size: 14px; margin-top: 10px; display: none; font-weight: bold; }
     </style>
 </head>
 <body>
 
-<!-- 1. OKNO ZA PRIJAVO -->
-<div class="login-box" id="prijavnoOkno">
-    <div style="font-size: 40px; margin-bottom: 10px;">🔐</div>
-    <h3>Zaklenjena vsebina</h3>
-    <p style="color: #64748b; font-size: 14px; margin-bottom: 25px;">Za uporabo se prijavite.</p>
-    <div class="vnos" style="text-align: left;">
+<!-- 1. PRIJAVA -->
+<div class="login-box" id="oknoPrijava">
+    <h3>🔐 Zaklenjen sistem</h3>
+    <div class="vnos">
         <label>Uporabniško ime:</label>
-        <input type="text" id="username">
+        <input type="text" id="user">
     </div>
-    <div class="vnos" style="text-align: left;">
+    <div class="vnos">
         <label>Geslo:</label>
-        <input type="password" id="password">
+        <input type="password" id="pass">
     </div>
-    <button class="btn-login" id="gumbZaPrijavo">PRIJAVA</button>
-    <div class="error-msg" id="napakaPrijava">Napačno uporabniško ime ali geslo!</div>
+    <button class="btn-login" onclick="klikPrijava()">PRIJAVA</button>
+    <div class="error-msg" id="napakica">Napačni podatki!</div>
 </div>
 
-<!-- 2. GLAVNI KALKULATOR -->
-<div class="box" id="glavniKalkulator">
-    <div style="text-align: right; margin-bottom: 15px;">
-        <button class="btn-odjava" id="gumbZaOdjava">➡️ Odjava</button>
+<!-- 2. KALKULATOR -->
+<div class="box" id="oknoKalkulator">
+    <div style="text-align: right; margin-bottom: 10px;">
+        <button class="btn-odjava" onclick="klikOdjava()">➡️ Odjava</button>
     </div>
-    <h2>Knauf AI Trgovski Pomočnik</h2>
+    <h2>Knauf AI Kalkulator</h2>
     <div class="vnos">
         <label>Kaj gradite?</label>
-        <select id="vrstaGradnje">
-            <option value="1">🧱 Predelna stena (Debelina 7,5 cm)</option>
-            <option value="2" selected>🧱 Predelna stena (Debelina 10 cm)</option>
-            <option value="3">🧱 Predelna stena (Debelina 12,5 cm)</option>
+        <select id="gradnja">
+            <option value="1">🧱 Predelna stena (Sistem 50mm)</option>
+            <option value="2" selected>🧱 Predelna stena (Sistem 75mm)</option>
+            <option value="3">🧱 Predelna stena (Sistem 100mm)</option>
             <option value="4">🏠 Raven strop (Spust do 12 cm)</option>
             <option value="5">🏠 Raven strop (Spust nad 12 cm)</option>
-            <option value="6">📐 Strop poševnina / Mansarda (Direktna obešala)</option>
-            <option value="7">📐 Strop poševnina / Mansarda (Šponarji)</option>
+            <option value="6">📐 Mansarda poševnina (Direktna)</option>
+            <option value="7">📐 Mansarda poševnina (Šponarji)</option>
+        </select>
+    </div>
+    <div class="vnos">
+        <label>Obloga plošč:</label>
+        <select id="obloga">
+            <option value="1" selected>Enojna obloga (1 plast)</option>
+            <option value="2">Dvojna obloga (2 plasti)</option>
         </select>
     </div>
     <div class="vnos">
         <label>Dolžina (metri):</label>
-        <input type="number" id="vnosDolzina" value="4.5" step="0.1">
+        <input type="number" id="dolz" value="4.5" step="0.1">
     </div>
     <div class="vnos">
         <label>Višina / Širina (metri):</label>
-        <input type="number" id="vnosVisina" value="2.5" step="0.1">
+        <input type="number" id="vis" value="2.5" step="0.1">
     </div>
     <div class="vnos">
-        <label>Tip prostora / Plošče:</label>
-        <select id="vnosTip">
-            <option value="siva">Suhi prostor (Siva plošča)</option>
-            <option value="zelena">Kopalnica / vlaga (Zelena plošča)</option>
-            <option value="rdeca">Mansarda / požarna varnost (Rdeča plošča)</option>
+        <label>Tip plošče:</label>
+        <select id="tip">
+            <option value="siva">Siva plošča (GKB - Navadna)</option>
+            <option value="zelena">Zelena plošča (GKBI - Vlaga)</option>
+            <option value="rdeca">Rdeča plošča (GKF / DF - Požarna)</option>
         </select>
     </div>
-    <button id="gumbZaIzracun">IZRAČUNAJ MATERIAL</button>
+    <button onclick="klikRacunaj()">IZRAČUNAJ MATERIAL</button>
     
-    <!-- 3. PRIKAZ REZULTATOV -->
-    <div id="prikazRezultatov" class="rezultati">
-        <h3>📋 Potreben material (z odpadom):</h3>
+    <!-- 3. REZULTATI -->
+    <div id="oknoRezultati" class="rezultati">
+        <h3>📋 Potreben material:</h3>
         <table>
             <thead><tr><th>Material</th><th>Količina</th></tr></thead>
-            <tbody id="tabelaIzpis"></tbody>
+            <tbody id="izpisTabela"></tbody>
         </table>
     </div>
 </div>
 
 <script>
-document.getElementById('gumbZaPrijavo').addEventListener('click', function() {
-    var u = document.getElementById('username').value.trim();
-    var g = document.getElementById('password').value.trim();
+function klikPrijava() {
+    var u = document.getElementById('user').value.trim().toLowerCase();
+    var g = document.getElementById('pass').value.trim().toLowerCase();
     if (u === "test" && g === "test") {
-        document.getElementById('prijavnoOkno').style.display = 'none';
-        document.getElementById('glavniKalkulator').style.display = 'block';
-        document.getElementById('username').value = "";
-        document.getElementById('password').value = "";
-        document.getElementById('napakaPrijava').style.display = 'none';
+        document.getElementById('oknoPrijava').style.display = 'none';
+        document.getElementById('oknoKalkulator').style.display = 'block';
+        document.getElementById('user').value = "";
+        document.getElementById('pass').value = "";
+        document.getElementById('napakica').style.display = 'none';
     } else {
-        document.getElementById('napakaPrijava').style.display = 'block';
+        document.getElementById('napakica').style.display = 'block';
     }
-});
+}
 
-document.getElementById('gumbZaOdjava').addEventListener('click', function() {
-    document.getElementById('glavniKalkulator').style.display = 'none';
-    document.getElementById('prikazRezultatov').style.display = 'none';
-    document.getElementById('prijavnoOkno').style.display = 'block';
-});
+function klikOdjava() {
+    document.getElementById('oknoKalkulator').style.display = 'none';
+    document.getElementById('oknoRezultati').style.display = 'none';
+    document.getElementById('oknoPrijava').style.display = 'block';
+}
 
-document.getElementById('gumbZaIzracun').addEventListener('click', function() {
-    var d = parseFloat(document.getElementById('vnosDolzina').value);
-    var v = parseFloat(document.getElementById('vnosVisina').value);
-    var vrsta = document.getElementById('vrstaGradnje').value;
-    var tipPlosce = document.getElementById('vnosTip').value;
+function klikRacunaj() {
+    var d = parseFloat(document.getElementById('dolz').value);
+    var v = parseFloat(document.getElementById('vis').value);
+    var g = document.getElementById('gradnja').value;
+    var o = parseInt(document.getElementById('obloga').value);
+    var t = document.getElementById('tip').value;
     
     if (!d || !v || d <= 0 || v <= 0) {
-        alert("Prosimo, vnesite pravilne mere.");
+        alert("Vnesite pravilne mere.");
         return;
     }
 
     var m2 = d * v;
-    var odpad = 1.10;
-    var pIme = "Mavčna plošča SIVA (2000x1250)";
-    if (tipPlosce === "zelena") pIme = "Mavčna plošča ZELENA (2000x1250)";
-    if (tipPlosce === "rdeca") pIme = "Mavčna plošča RDEČA (2000x1250)";
+    var odp = 1.10;
+    
+    var pIme = "Mavčna plošča SIVA GKB (2x1.25m)";
+    if (t === "zelena") pIme = "Mavčna plošča ZELENA GKBI (2x1.25m)";
+    if (t === "rdeca") pIme = "Mavčna plošča RDEČA GKF/DF (Požarna)";
 
-    var h = "";
+    var txt = "";
 
-    if (vrsta === "1" || vrsta === "2" || vrsta === "3") {
+    if (g === "1" || g === "2" || g === "3") {
         var pr = "75"; var vol = "75mm";
-        if (vrsta === "1") { pr = "50"; vol = "50mm"; }
-        if (vrsta === "3") { pr = "100"; vol = "100mm"; }
-        var p = Math.ceil((m2 * 2 * odpad) / 2.5);
-        var uw = Math.ceil((d * 2 * odpad) / 4);
-        var cw = Math.ceil(((d / 0.6) + 1) * odpad);
-        var vln = Math.ceil(m2 * odpad);
-        var vij = Math.ceil(m2 * 2 * 18);
+        if (g === "1") { pr = "50"; vol = "50mm"; }
+        if (g === "3") { pr = "100"; vol = "100mm"; }
+        
+        var p = Math.ceil((m2 * 2 * o * odp) / 2.5);
+        var uw = Math.ceil((d * 2 * odp) / 4);
+        var cw = Math.ceil(((d / 0.6) + 1) * odp);
+        var vln = Math.ceil(m2 * odp);
+        var vij = Math.ceil(m2 * 2 * o * 18);
 
-        h = "tr>td"+pIme+"tdtdb"+p+" kosbtdtr"+
-            "trtdUW "+pr+" vodilo (4m)tdtdb"+uw+" kosbtdtr"+
-            "trtdCW "+pr+" stebriček (3m)tdtdb"+cw+" kosbtdtr"+
-            "trtdIzolacijska volna "+vol+"tdtdb"+vln+" m²btdtr"+
-            "trtdVijaki TN 25tdtdb"+vij+" kosbtdtr";
+        txt += "<tr><td>" + pIme + "</td><td><b>" + p + " kos</b></td></tr>";
+        txt += "<tr><td>UW " + pr + " vodilo (4m)</td><td><b>" + uw + " kos</b></td></tr>";
+        txt += "<tr><td>CW " + pr + " stebriček (3m)</td><td><b>" + cw + " kos</b></td></tr>";
+        txt += "<tr><td>Izolacijska volna " + vol + "</td><td><b>" + vln + " m²</b></td></tr>";
+        txt += "<tr><td>Vijaki TN 25 / TN 35</td><td><b>" + vij + " kos</b></td></tr>";
     } 
-    else if (vrsta === "4" || vrsta === "5") {
-        var p = Math.ceil((m2 * odpad) / 2.5);
-        var ud = Math.ceil((((d + v) * 2) * odpad) / 3);
-        var cd = Math.ceil(((v / 0.5) * d * odpad) / 3);
-        var vij = Math.ceil(m2 * 18);
-        var obe = (vrsta === "4") ? "trtdDirektna obešalatdtdb"+Math.ceil(m2 * 2)+" kosbtdtr" : 
-                  "trtdŽica z ušesomtdtdb"+Math.ceil(m2 * 2)+" kosbtdtrtrtdSidrno obešalotdtdb"+Math.ceil(m2 * 2)+" kosbtdtr";
-
-        h = "tr>td"+pIme+"tdtdb"+p+" kosbtdtr"+
-            "trtdUD obodni profil (3m)tdtdb"+ud+" kosbtdtr"+
-            "trtdCD nosilni profil (3m)tdtdb"+cd+" kosbtdtr"+obe+
-            "trtdVijaki TN 25tdtdb"+vij+" kosbtdtr";
+    else if (g === "4" || g === "5") {
+        var p = Math.ceil((m2 * o * odp) / 2.5);
+        var ud = Math.ceil((((d + v) * 2) * odp) / 3);
+        var cd = Math.ceil(((v / 0.5) * d * odp) / 3);
+        var vij = Math.ceil(m2 * o * 18);
+        
+        txt += "<tr><td>" + pIme + "</td><td><b>" + p + " kos</b></td></tr>";
+        txt += "<tr><td>UD obodni profil (3m)</td><td><b>" + ud + " kos</b></td></tr>";
+        txt += "<tr><td>CD nosilni profil (3m)</td><td><b>" + cd + " kos</b></td></tr>";
+        
+        if (g === "4") {
+            txt += "<tr><td>Direktna obešala</td><td><b>" + Math.ceil(m2 * 2) + " kos</b></td></tr>";
+        } else {
+            txt += "<tr><td>Žica z ušesom</td><td><b>" + Math.ceil(m2 * 2) + " kos</b></td></tr>";
+            txt += "<tr><td>Sidrno obešalo (Pentlja)</td><td><b>" + Math.ceil(m2 * 2) + " kos</b></td></tr>";
+        }
+        txt += "<tr><td>Vijaki TN 25 / TN 35</td><td><b>" + vij + " kos</b></td></tr>";
     } 
-    else if (vrsta === "6" || vrsta === "7") {
-        var p = Math.ceil((m2 * odpad) / 2.5);
-        var ud = Math.ceil((((d + v) * 2) * odpad) / 3);
-        var cd = Math.ceil(((v / 0.5) * d * odpad) / 3);
-        var vij = Math.ceil(m2 * 18);
+    else if (g === "6" || g === "7") {
+        var p = Math.ceil((m2 * o * odp) / 2.5);
+        var ud = Math.ceil((((d + v) * 2) * odp) / 3);
+        var cd = Math.ceil(((v / 0.5) * d * odp) / 3);
+        var vij = Math.ceil(m2 * o * 18);
         var fol = Math.ceil(m2 * 1.15);
-        var obe = (vrsta === "6") ? "trtdDirektna obešala za lestdtdb"+Math.ceil(m2 * 2)+" kosbtdtr" : 
-                  "trtdSidrni obešalnik (Šponar)tdtdb"+Math.ceil(m2 * 2)+" kosbtdtr";
-
-        h = "tr>td"+pIme+"tdtdb"+p+" kosbtdtr"+
-            "trtdUD obodni profil (3m)tdtdb"+ud+" kosbtdtr"+
-            "trtdCD nosilni profil (3m)tdtdb"+cd+" kosbtdtr"+obe+
-            "trtdParna zapora (Folija)tdtdb"+fol+" m²btdtr"+
-            "trtdVijaki TN 25tdtdb"+vij+" kosbtdtr";
+        
+        txt += "<tr><td>" + pIme + "</td><td><b>" + p + " kos</b></td></tr>";
+        txt += "<tr><td>UD obodni profil (3m)</td><td><b>" + ud + " kos</b></td></tr>";
+        txt += "<tr><td>CD nosilni profil (3m)</td><td><b>" + cd + " kos</b></td></tr>";
+        
+        if (g === "6") {
+            txt += "<tr><td>Direktna obešala za les</td><td><b>" + Math.ceil(m2 * 2) + " kos</b></td></tr>";
+        } else {
+            txt += "<tr><td>Sidrni obešalnik (Šponar)</td><td><b>" + Math.ceil(m2 * 2) + " kos</b></td></tr>";
+        }
+        txt += "<tr><td>Parna zapora (Folija)</td><td><b>" + fol + " m²</b></td></tr>";
+        txt += "<tr><td>Vijaki TN 25 / TN 35</td><td><b>" + vij + " kos</b></td></tr>";
     }
 
-    // Popravek tekstovnih oznak tabel
-    h = h.split("tr>").join("<tr>").split("td>").join("<td>").split("tdtr").join("</td></tr>").split("tdtd").join("</td><td>").split("b>").join("<strong>").split("btd").join("</strong></td>");
-    document.getElementById('tabelaIzpis').innerHTML = h;
-    document.getElementById('prikazRezultatov').style.display = 'block';
-});
+    document.getElementById('izpisTabela').innerHTML = txt;
+    document.getElementById('oknoRezultati').style.display = 'block';
+}
 </script>
 
 </body>
 </html>
+
